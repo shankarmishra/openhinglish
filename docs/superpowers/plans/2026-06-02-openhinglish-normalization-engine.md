@@ -1133,8 +1133,8 @@ from openhinglish import normalize
 
 def test_worked_example_end_to_end():
     res = normalize("bhai kal mera intv h paytm me")
-    assert res.display == "भाई कल मेरा interview Paytm में है"
-    assert res.tts == "भाई कल मेरा इंटरव्यू पे-टी-एम में है"
+    assert res.display == "भाई कल मेरा interview है Paytm में"
+    assert res.tts == "भाई कल मेरा इंटरव्यू है पे-टी-एम में"
 
 
 def test_every_token_has_a_trace():
@@ -1296,7 +1296,7 @@ Expected: FAIL — `ModuleNotFoundError`
 
 Seed rows (`input \t ref_display \t ref_tts \t category`). Start with these and grow to ≥300 by hand:
 ```
-bhai kal mera intv h paytm me	भाई कल मेरा interview Paytm में है	भाई कल मेरा इंटरव्यू पे-टी-एम में है	code-switch
+bhai kal mera intv h paytm me	भाई कल मेरा interview है Paytm में	भाई कल मेरा इंटरव्यू है पे-टी-एम में	code-switch
 kal	कल	कल	roman-hindi
 paytm	Paytm	पे-टी-एम	brand
 shankar	Shankar	शंकर	name

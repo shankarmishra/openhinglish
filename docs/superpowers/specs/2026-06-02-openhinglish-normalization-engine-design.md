@@ -34,8 +34,8 @@ and a TTS-ready `tts` form, with confidence scores and n-best alternatives.
 
 ```
 input :  "bhai kal mera intv h paytm me"
-display: "भाई कल मेरा interview Paytm में है"
-tts    : "भाई कल मेरा इंटरव्यू पे-टी-एम में है"
+display: "भाई कल मेरा interview है Paytm में"
+tts    : "भाई कल मेरा इंटरव्यू है पे-टी-एम में"
 ```
 
 (Note: punctuation/capitalization insertion — e.g. the comma in "भाई, कल…" — is explicitly
@@ -204,8 +204,8 @@ Invariants:
 from openhinglish import normalize, Config
 
 result = normalize("bhai kal mera intv h paytm me", config=Config())
-result.display  # "भाई कल मेरा interview Paytm में है"
-result.tts      # "भाई कल मेरा इंटरव्यू पे-टी-एम में है"
+result.display  # "भाई कल मेरा interview है Paytm में"
+result.tts      # "भाई कल मेरा इंटरव्यू है पे-टी-एम में"
 result.tokens[0].trace  # ["S1: lexicon=roman_hindi", "S3: translit lookup bhai→भाई"]
 ```
 
