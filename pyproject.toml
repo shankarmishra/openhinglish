@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openhinglish"
+version = "0.1.0"
+description = "Deterministic, explainable Roman-Hinglish text normalization engine"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+cli = ["typer>=0.12"]
+server = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+openhinglish = "openhinglish.api.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+openhinglish = ["data/lexicons/*.tsv", "data/gazetteers/*.tsv", "eval/bench_mini/*.tsv"]
