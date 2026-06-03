@@ -54,6 +54,13 @@ def _reclassify(tokens: list[Token], config: Config) -> None:
     from openhinglish.pipeline.s0_preprocess import tokenize as _tok
     for tok in tokens:
         if getattr(tok, "_reclass", False):
+            # Multi-word expansion: keep the full phrase, do NOT single-token shadow reclassify
+            if tok.display_form and " " in tok.display_form:
+                tok.category = Category.ENGLISH
+                tok.tts_form = tok.display_form
+                tok.trace.append(f"S2: multi-word expansion kept as ENGLISH: '{tok.display_form}'")
+                tok._reclass = False
+                continue
             shadow = classify(_tok(tok.display_form, config), config)
             if shadow:
                 s = shadow[0]

@@ -8,8 +8,8 @@
 
 ---
 
-> **V0.1 — Foundation.**
-> The 7-stage deterministic pipeline is built and 32 unit tests pass. Seed lexicons are small (~13 Roman-Hindi words, 6 SMS abbreviations, 4 names, 4 brands), so real-world coverage on arbitrary Hinglish is limited and growing. **Not production-ready yet.** The highest-value contribution right now is adding lexicon entries — no coding required.
+> **Early-functional — not production-ready.**
+> The 7-stage deterministic pipeline is working and **51 unit tests pass**. Lexicons have grown from ~35 seed entries to **~1,300+ entries** (roman_hindi ~460+, plus verb conjugations, function words, English, names including cities, and brands). A **deterministic context disambiguator (V3)** is implemented, resolving structurally ambiguous tokens such as "main road" vs "main ghar" by neighbour context. A **REST API server, web test console, and CLI** are available. A **multilingual scaffold** (Marathi + Punjabi seed lexicons) exists but is not yet wired into the engine. The honest benchmark is **43 gold sentences at ~0.81 exact-match** — real gaps remain in addresses, some verb forms, multi-word abbreviations, and large numbers. **Not production-ready.** The highest-value contribution right now is adding lexicon entries — no coding required.
 
 ---
 
@@ -102,7 +102,7 @@ Good open TTS options that consume clean Devanagari:
 | [Indic-Parler-TTS](https://github.com/AI4Bharat/indic-parler-tts) | Apache-2.0 | Fast, multi-speaker |
 | [CosyVoice2](https://github.com/FunAudioLLM/CosyVoice) | Apache-2.0 | ~150 ms latency |
 
-A pre-built adapter connecting OpenHinglish to IndicF5 is planned for V4 and is currently experimental/optional.
+A pre-built adapter connecting OpenHinglish to IndicF5 is available as an **experimental optional extra** (`pip install -e ".[tts]"`). It requires a separate model download and is not part of the core library. Audio generation is never performed by the core engine.
 
 ---
 
@@ -166,6 +166,16 @@ print(result.tokens[0].category)  # Category.HINDI_ROMAN, Category.ENGLISH, etc.
 python -m openhinglish.api.cli "bhai kal mera intv h paytm me"
 ```
 
+### REST API server
+
+```bash
+python -m openhinglish.api.server
+# POST /normalize  {"text": "bhai kal mera intv h"}
+# GET  /health
+```
+
+The server exposes a FastAPI endpoint at `http://127.0.0.1:8000`. It returns the same structured JSON (`display`, `tts`, `confidence`, per-token detail) as the Python API.
+
 ### Web test console
 
 ```bash
@@ -173,7 +183,7 @@ python -m openhinglish.api.webui
 # Open http://127.0.0.1:8000 in your browser
 ```
 
-The web UI lets you type arbitrary Hinglish and inspect both outputs, per-token confidence, and explainability traces — no code required.
+The web UI (zero dependencies beyond the core install) lets you type arbitrary Hinglish and inspect both outputs, per-token confidence, and explainability traces — no code required.
 
 ---
 
@@ -206,12 +216,12 @@ Full details: [docs/MASTER_ROADMAP.md](docs/MASTER_ROADMAP.md)
 
 | Version | Theme | Status |
 |---|---|---|
-| **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best + traces, 6-row benchmark | **Done (current)** |
-| **V1 "Usable Hindi+English"** | 10k+ lexicon (Dakshina), 5k+ names, 500+ brands, 300+ bench sentences, PyPI | In progress |
-| **V2 "Multilingual"** | Marathi, Punjabi, Gujarati, Bengali, Tamil, Telugu — same pipeline | Planned |
-| **V3 "Context-aware"** | Pluggable learned disambiguator, NER for names, punctuation restoration | Planned |
-| **V4 "Ecosystem"** | IndicF5/CosyVoice2 adapters, ASR post-processing, JS/WASM port | Planned |
-| **V5 "The Standard"** | IndianTTSBench public leaderboard, community governance | Planned |
+| **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best + traces | **Done** |
+| **V1 "Usable Hindi+English"** | ~1,300+ entries now, target 10k+ (Dakshina); 43-sentence benchmark at ~0.81 EM | **In progress** |
+| **V2 "Multilingual"** | Marathi + Punjabi seed lexicons exist; not wired into engine yet | **Scaffold only** |
+| **V3 "Context-aware"** | Deterministic neighbour-context disambiguator done; learned ML layer not started | **Started** |
+| **V4 "Ecosystem"** | REST API + web UI + CLI + experimental IndicF5 adapter done; hosted API + JS port not started | **Partial** |
+| **V5 "The Standard"** | 43-sentence honest benchmark done; public leaderboard + community governance not started | **Started** |
 
 ---
 
@@ -236,7 +246,7 @@ Lexicons are plain TSV files in `src/openhinglish/data/`. Each file has a header
 1. Fork and branch: `git checkout -b add-lexicon-<word-or-source>`
 2. Edit the relevant TSV. Follow the column format in the header.
 3. Add a sentence to `eval/bench_mini/sentences.tsv` exercising the new entry.
-4. Run `pytest tests/ -v` — all 32 tests must pass.
+4. Run `pytest tests/ -v` — all 51 tests must pass.
 5. Open a PR describing the data source and its license.
 
 **License note for data:** if contributing data derived from Dakshina (CC-BY-SA-4.0), label it clearly in the PR. SA data carries the SA license, not MIT. See [DATA_LICENSES.md](DATA_LICENSES.md).

@@ -1,8 +1,10 @@
 # OpenHinglish — Master Roadmap
 
-> **Status as of V0.1:** Deterministic pipeline complete, 32 unit tests passing, 6-row
-> bench-mini included. Seed lexicons are tiny; real-world coverage on arbitrary Hinglish
-> is near-zero. This document is a living plan, not a promise sheet.
+> **Status as of 2026-06:** Engine is early-functional — 51 unit tests passing, ~1,300+
+> lexicon entries, deterministic context disambiguator (V3) implemented, REST API + web UI
+> + CLI shipped, honest 43-sentence benchmark at ~0.81 EM. Not production-ready; lexicon
+> coverage remains the main gap. This document is a living plan, not a promise sheet.
+> See the [Progress as of 2026-06](#progress-as-of-2026-06) section below for a version-by-version status snapshot.
 
 ---
 
@@ -111,6 +113,24 @@ front of every Indian AI product, maintained once, used everywhere.
 
 ---
 
+## Progress as of 2026-06
+
+Honest snapshot of where each version stands right now. "DONE" means exit criteria are
+met. "IN PROGRESS" means actively worked on. "SCAFFOLD ONLY" means the structure exists
+but the work is not complete or wired up. "STARTED" means one or more deliverables are
+done but the version as a whole is not. "NOT STARTED" means nothing has been built yet.
+
+| Version | Theme | Status | Notes |
+|---|---|---|---|
+| **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best, traces | **DONE** | 51 tests passing (up from 32); original 6-row bench superseded by V5 work |
+| **V1 "Usable Hindi+English"** | Scale lexicon; real-world coverage | **IN PROGRESS** | ~1,300+ entries now (roman_hindi ~460+, verbs, function words, English, names, brands); target ~10k via Dakshina; bench at 43 sentences, overall EM ≈ 0.81 — real gaps remain (addresses, verb forms, multi-word abbreviations, large numbers) |
+| **V2 "Multilingual"** | Marathi, Punjabi, Gujarati, Bengali, Tamil, Telugu | **SCAFFOLD ONLY** | Marathi + Punjabi seed lexicons exist in the data directory; language-detection and pipeline wiring NOT yet implemented; no bench rows for either language |
+| **V3 "Context-aware"** | Learned disambiguator, NER, punctuation restoration | **STARTED** | Deterministic neighbour-context disambiguator is implemented and resolves ambiguous tokens (e.g. "main road" vs "main ghar") via rule-based logic; learned ML layer is NOT started — requires labelled data and GPU training, neither of which is available yet |
+| **V4 "Ecosystem"** | Adapters, hosted API, JS/WASM port | **PARTIAL** | Done: REST API server (`api/server.py`, `POST /normalize`, `GET /health`), zero-dep web test console (`api/webui.py`), CLI (`api/cli.py`), experimental IndicF5 audio adapter (`adapters/indicf5.py`, optional `[tts]` extra). NOT started: hosted/public API endpoint, JavaScript/WASM port |
+| **V5 "The Standard"** | IndianTTSBench public leaderboard, governance | **STARTED** | `IndianTTSBench-mini` has grown to 43 gold sentences; honest overall EM ≈ 0.81 (previous 1.000 figure was over 6 cherry-picked rows and has been retired); benchmark exposes real engine gaps. NOT started: public leaderboard hosting, community governance structure |
+
+---
+
 ## Roadmap V0.1 → V5
 
 Each version has a canonical theme, concrete deliverables, and explicit exit criteria.
@@ -137,18 +157,21 @@ Exit criteria define what must be empirically true before the version tag is pub
 - Installable package (`pip install -e .`); CLI entry point scaffolded.
 
 **Exit criteria (met):**
-- All 32 unit tests pass on a clean install.
+- All 32 unit tests pass on a clean install (suite has since grown to 51 as later work
+  was added — original 32 still pass).
 - `normalize("bhai kal mera intv h paytm me")` returns `display="भाई कल मेरा interview
   है Paytm में"` and `tts="भाई कल मेरा इंटरव्यू है पे-टी-एम में"`.
-- Bench-mini reports 1.000 n-best coverage over its 6 rows (trivially true: rows were
-  selected to match seed vocab).
+- Bench-mini reported 1.000 n-best coverage over its 6 rows (trivially true: rows were
+  selected to match seed vocab — this figure has since been retired in favour of the
+  honest 43-sentence benchmark at ~0.81 EM introduced in V5 work).
 
 **Known limitations at exit:** Real-world coverage on arbitrary Hinglish is near-zero.
-The 1.000 bench score is over 6 curated rows, not a capability claim.
+The 1.000 bench score was over 6 curated rows, not a capability claim — see V5 progress
+for the current honest benchmark.
 
 ---
 
-### V1 "Usable Hindi+English"
+### V1 "Usable Hindi+English" — **IN PROGRESS**
 
 **Theme:** Scale the data until the engine is genuinely useful on real Hinglish text.
 
@@ -178,7 +201,7 @@ The 1.000 bench score is over 6 curated rows, not a capability claim.
 
 ---
 
-### V2 "Multilingual Frontends"
+### V2 "Multilingual Frontends" — **SCAFFOLD ONLY**
 
 **Theme:** Extend the same pipeline to other Indian code-switch registers.
 
@@ -201,10 +224,17 @@ The 1.000 bench score is over 6 curated rows, not a capability claim.
 
 ---
 
-### V3 "Context-aware (learned layer, Path C)"
+### V3 "Context-aware (learned layer, Path C)" — **STARTED**
 
 **Theme:** Slot in a learned disambiguator behind the existing `Disambiguator` interface;
 no pipeline rewrite.
+
+**Current state (2026-06):** A deterministic, rule-based neighbour-context disambiguator
+is implemented and resolves structurally ambiguous tokens (e.g. "main road" vs "main
+ghar") by inspecting surrounding tokens. This is not a learned model — it uses hand-coded
+context rules. The `LearnedDisambiguator` deliverable below (trained weights, CRF/biLSTM,
+adversarial bench) is NOT started and requires labelled data and GPU training that are not
+yet available.
 
 **Deliverables:**
 - A trained `LearnedDisambiguator` implementation of the `Disambiguator` Protocol.
@@ -231,9 +261,16 @@ no pipeline rewrite.
 
 ---
 
-### V4 "Ecosystem and Integrations"
+### V4 "Ecosystem and Integrations" — **PARTIAL**
 
 **Theme:** Make OpenHinglish trivially consumable across the Indian AI stack.
+
+**Current state (2026-06):** REST API server (`api/server.py`, `POST /normalize`,
+`GET /health`), zero-dependency web test console (`api/webui.py`), and CLI (`api/cli.py`)
+are done and usable. An experimental IndicF5 audio adapter (`adapters/indicf5.py`) ships
+as an optional `[tts]` extra and requires a separate model download — it is not part of
+the core library and not production-validated. Hosted API endpoint and JS/WASM port are
+NOT started.
 
 **Deliverables:**
 - **TTS adapters**: pre-built connector modules for IndicF5 (MIT) and CosyVoice2
@@ -257,10 +294,16 @@ no pipeline rewrite.
 
 ---
 
-### V5 "The Standard"
+### V5 "The Standard" — **STARTED**
 
 **Theme:** Governance maturity and community ownership; OpenHinglish as public
 infrastructure, not a solo project.
+
+**Current state (2026-06):** `IndianTTSBench-mini` has grown to **43 gold sentences**.
+The overall exact-match score is honestly reported as **~0.81** — the previous 1.000
+figure (over 6 cherry-picked rows) has been retired as misleading. The benchmark exposes
+real engine gaps: addresses, some verb forms, multi-word abbreviations, large numbers.
+Public leaderboard hosting and community governance are NOT started.
 
 **Deliverables:**
 - **IndianTTSBench public leaderboard**: a hosted, reproducible benchmark where any
@@ -290,13 +333,13 @@ commitments. They exist to force early falsification, not to impress anyone.
 
 | Metric | V0.1 | V1 | V2 | V3 | V4 | V5 |
 |---|---|---|---|---|---|---|
-| Lexicon entries (Roman-Hindi) | ~13 | 10 000+ | 10 000+ (stable) | same | same | same |
-| Names gazetteer entries | 4 | 5 000+ | 5 000+ | same + NER | same | same |
-| Brands gazetteer entries | 4 | 500+ | 500+ | same | same | same |
-| Bench size (gold rows) | 6 | 300+ | 300+ + 6×50 per lang | 300+ + adversarial | same | public leaderboard |
-| n-best coverage @k=3 (Hindi+Hinglish bench) | 1.000 (6 rows) | ≥ 85% | ≥ 85% Hindi; ≥ 70% new langs | ≥ 90% Hindi | same | same |
-| Display-accuracy @k=1 | unmeasured | ≥ 80% | ≥ 80% Hindi | ≥ 85% | same | public |
-| TTS-accuracy @k=1 | unmeasured | ≥ 75% | ≥ 75% Hindi | ≥ 82% | same | public |
+| Lexicon entries (Roman-Hindi) | ~13 seed → **~1,300+ now** | 10 000+ | 10 000+ (stable) | same | same | same |
+| Names gazetteer entries | 4 seed → **growing** | 5 000+ | 5 000+ | same + NER | same | same |
+| Brands gazetteer entries | 4 seed → **growing** | 500+ | 500+ | same | same | same |
+| Bench size (gold rows) | 6 seed → **43 now** | 300+ | 300+ + 6×50 per lang | 300+ + adversarial | same | public leaderboard |
+| n-best coverage @k=3 (Hindi+Hinglish bench) | ~~1.000 (6 rows)~~ → **~0.81 EM (43 rows)** | ≥ 85% | ≥ 85% Hindi; ≥ 70% new langs | ≥ 90% Hindi | same | same |
+| Display-accuracy @k=1 | **~0.81 EM (honest, 43 rows)** | ≥ 80% | ≥ 80% Hindi | ≥ 85% | same | public |
+| TTS-accuracy @k=1 | unmeasured separately | ≥ 75% | ≥ 75% Hindi | ≥ 82% | same | public |
 | Ambiguity resolution accuracy | N/A | N/A | N/A | ≥ 80% | same | same |
 | CPU latency p95 (per utterance) | unmeasured | ≤ 20 ms | ≤ 25 ms | ≤ 50 ms | ≤ 50 ms (WASM: ≤ 100 ms) | same |
 | PyPI downloads / month | 0 | first publish | ≥ 200 | ≥ 500 | ≥ 1 000 | ≥ 5 000 |
@@ -306,9 +349,9 @@ commitments. They exist to force early falsification, not to impress anyone.
 | Active contributors | 1 | 1 | ≥ 3 | ≥ 5 | ≥ 8 | bus-factor ≥ 2 |
 | Bus-factor | 1 | 1 | 1–2 | 2 | 2 | ≥ 2 |
 
-**How to read this table:** V0.1 numbers are actual. V1+ numbers are targets set today
-with current knowledge; they will be revised as evidence accumulates. A missed target is
-a signal to adjust, not a failure to hide.
+**How to read this table:** V0.1 column shows original targets with current actuals noted
+inline where they differ. V1+ numbers are targets; they will be revised as evidence
+accumulates. A missed target is a signal to adjust, not a failure to hide.
 
 ---
 
@@ -317,12 +360,13 @@ a signal to adjust, not a failure to hide.
 These are genuine open questions, not disclaimers. Each one could materially change the
 direction.
 
-### 1. Skeleton is not a product
+### 1. Coverage is still limited — engine is not yet broadly useful
 
-V0.1 coverage on arbitrary Hinglish text is near-zero. The 7-stage pipeline is
-architecturally sound and all tests pass, but "tests pass" means "the 6 seed bench rows
-work." If someone installs V0.1 and tries it on their actual chatbot transcripts, most
-tokens will fall through to UNKNOWN. The real work begins in V1.
+The 7-stage pipeline is architecturally sound and 51 tests pass. Lexicons have grown to
+~1,300+ entries and the honest 43-sentence benchmark shows ~0.81 EM. That is real
+progress over V0.1, but on arbitrary, uncurated Hinglish transcripts most uncommon tokens
+will still fall through to UNKNOWN or receive low-confidence outputs. The real scale-up
+work is in V1 (Dakshina integration, names and brands gazetteers).
 
 ### 2. Bus-factor = 1 is the existential risk
 
