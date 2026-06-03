@@ -1,7 +1,7 @@
 # OpenHinglish — Deployment & Packaging Guide
 
 > Canonical reference for deploying, packaging, and distributing OpenHinglish.
-> Keep consistent with `_BLUEPRINT_BRIEF.md`. Last updated: 2026-06-02.
+> Last updated: 2026-06-03.
 
 ---
 

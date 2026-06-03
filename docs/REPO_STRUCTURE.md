@@ -71,7 +71,7 @@ openhinglish/                              ← repo root
 │       │   ├── run_bench.py               [exists]   CLI entry point for benchmark run
 │       │   └── bench_mini/
 │       │       ├── __init__.py            [exists]
-│       │       └── sentences.tsv          [exists]   6 seed rows; grow to 300+ for V1
+│       │       └── sentences.tsv          [exists]   43 rows, 11 categories; grow to 300+ for V1
 │       │
 │       └── api/                           [exists]
 │           ├── cli.py                     [exists]   typer CLI: openhinglish "..."
@@ -98,14 +98,18 @@ openhinglish/                              ← repo root
 │   └── README.md                      [exists]
 │
 ├── docs/
-│   ├── _BLUEPRINT_BRIEF.md                [exists]   canonical internal brief
-│   ├── ARCHITECTURE.md                    [exists]   this companion doc (pipeline + data model)
+│   ├── ARCHITECTURE.md                    [exists]   pipeline + data model
 │   ├── REPO_STRUCTURE.md                  [exists]   this file
-│   └── superpowers/
-│       ├── specs/
-│       │   └── 2026-06-02-openhinglish-normalization-engine-design.md  [exists]
-│       └── plans/
-│           └── 2026-06-02-openhinglish-normalization-engine.md         [exists]
+│   ├── BENCHMARK.md                       [exists]   IndianTTSBench-mini methodology + scores
+│   ├── DATASETS.md                        [exists]   data sources, provenance, licenses
+│   ├── DEPLOYMENT.md                      [exists]   packaging + distribution guide
+│   ├── ECOSYSTEM_STRATEGY.md             [exists]   TTS/ASR integration strategy
+│   ├── GOVERNANCE.md                      [exists]   project governance
+│   ├── LANGUAGE_PACKS.md                  [exists]   multilingual scaffold notes
+│   ├── AUDIO_ADAPTER.md                   [exists]   experimental IndicF5 adapter notes
+│   ├── MASTER_ROADMAP.md                  [exists]   V0.1 → V5 roadmap
+│   └── devlog/
+│       └── DEVLOG_001.md                  [exists]   development log
 │
 ├── pyproject.toml                         [exists]   build config, optional extras, entry points
 ├── README.md                              [exists]   production README with install, usage, API reference

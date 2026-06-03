@@ -1,8 +1,8 @@
 # OpenHinglish — Benchmark Reference (IndianTTSBench)
 
 > Authoritative specification for the IndianTTSBench-mini evaluation harness and its path to becoming a community standard.
-> Read alongside `_BLUEPRINT_BRIEF.md` (canonical) and `DATASETS.md` (data provenance).
-> Senior, honest tone: the current 6-row score is not a capability claim.
+> Read alongside `DATASETS.md` (data provenance).
+> Senior, honest tone: the current 43-sentence score is an early signal, not a production capability claim.
 
 ---
 
@@ -20,32 +20,37 @@ Secondary purpose: regression gating. Every PR that touches lexicons, pipeline s
 
 ### 1.2 Categories
 
-The benchmark is organized into **eight categories**, each targeting a distinct normalization challenge:
+**Actual current categories.** The benchmark TSV (`eval/bench_mini/sentences.tsv`) currently uses **11 category slugs**. Each row carries exactly one slug. These are the categories actually present and scored today:
 
-| Category | What it tests | Example input |
-|---|---|---|
-| **names** | Correct transliteration and TTS pronunciation of Indian personal names | `priya ne kaha` |
-| **brand-mixing** | Brand-name recognition, casing preservation in display, phonetic expansion in TTS | `mujhe paytm karna h` |
-| **code-switch** | Detection and correct handling of mid-sentence language transitions | `bhai kal mera intv h paytm me` |
-| **numerals** | Digit expansion in Hindi or English words per config; date/time formats | `mera no h 9810012345` |
-| **dates** | Full date normalization: display (readable) vs. TTS (spoken form) | `15/8/1947 ko azadi mili` |
-| **addresses** | Street addresses, pin codes, locality names — preserve readability; expand abbreviations | `Sec 62 Noida UP mein` |
-| **SMS-abbrev** | Expansion of chat/SMS abbreviations common in Indian English/Hinglish | `kl milte h, ttyl` |
-| **ambiguity-traps** | Tokens that require context to resolve correctly: `main` (I / main road), `to` (then / to / too), `kal` (yesterday / tomorrow) | `kal subah kal main road pe` |
+| Category | What it tests | Rows | display EM | tts EM |
+|---|---|---|---|---|
+| **roman-hindi** | Core Roman → Devanagari transliteration of common Hindi words | 5 | 1.000 | 1.000 |
+| **verb** | Verb conjugations and tense forms | 2 | 1.000 | 1.000 |
+| **name** | Transliteration and TTS pronunciation of Indian personal names | 4 | 1.000 | 1.000 |
+| **brand** | Brand-name recognition, casing in display, phonetic spell-out in TTS | 6 | 1.000 | 1.000 |
+| **numeral** | Digit handling and Hindi/English number-word expansion per config | 4 | 1.000 | 1.000 |
+| **acronym** | Letter-by-letter acronyms (e.g. `IIT`, `RBI`) | 4 | 1.000 | 1.000 |
+| **abbrev** | SMS/chat abbreviation expansion (`intv` → interview) | 3 | 1.000 | 0.667 |
+| **question** | Interrogative phrasings | 3 | 1.000 | 1.000 |
+| **mixed** | Sentences combining several of the above | 3 | 1.000 | 1.000 |
+| **code-switch** | Mid-sentence Hindi↔English transitions | 7 | 0.714 | 0.714 |
+| **address** | Street addresses, sector/pin/locality tokens | 2 | 0.500 | 0.000 |
 
-The ambiguity-traps category deserves extra weight because it exposes the core limitation of a deterministic engine: without context, these tokens cannot always be resolved correctly. V1 explicitly defers learning-based disambiguation to V3. The benchmark must honestly represent this limitation rather than hide it by avoiding ambiguous test cases.
+Scores above are from the current engine on the 43-sentence set (see §4.4). The two honest weak spots are **address** (multi-word locality tokens; tts especially) and **code-switch** (English-word boundaries inside Hindi sentences). `abbrev` is perfect on display but loses one row on the stricter full-Devanagari TTS channel.
+
+**Planned (not yet a separate slug).** A future taxonomy expansion will add an explicit **ambiguity-traps** category for tokens that require context to resolve (`main` = I / main road, `kal` = yesterday / tomorrow, `to` = then / to / too). These currently fall inside `code-switch`/`mixed` rows. Ambiguity-traps deserve extra weight because they expose the core limitation of a deterministic engine: without context, such tokens cannot always be resolved correctly. The V3 neighbour-context disambiguator addresses some of these (e.g. "main road" vs "main ghar"); the rest are deferred. The benchmark must honestly represent this limitation rather than hide it by avoiding ambiguous test cases.
 
 ### 1.3 Current Size and Growth Plan
 
 | Release | Target rows | Status |
 |---|---|---|
-| V0.1 (current) | 6 seed rows | Done — exercises pipeline smoke test only |
+| V0.1 → current | 43 sentences across 11 categories | Done — single-maintainer authored; an early signal, not multi-annotator validated |
 | V1 | ≥ 300 human-verified sentences | Requires data sprint; multi-annotator |
 | V2 | 300+ per language (Hindi + 6 new) | Per-language frontier |
 | V3 | 500+ including ambiguity-trap pairs | Ambiguity-trap set grows with V3 learned disambiguator |
 | V5 | 1 000+ | Full public benchmark; community-submitted; governed leaderboard |
 
-The 6 seed rows exist to confirm the pipeline does not crash and returns structurally correct output. They do not — and are not claimed to — represent real-world capability.
+The current 43 sentences were authored by the maintainer who also wrote the engine. They are large enough to surface real weak spots (address and code-switch both score below 1.0), but they are **not** multi-annotator validated and do not yet represent the diversity of real-world Hinglish. Treat 0.93 display EM as an early signal, not a production capability claim.
 
 ### 1.4 TSV Schema
 
@@ -60,7 +65,7 @@ input        TAB ref_display      TAB ref_tts           TAB category     TAB not
 - `input` — raw Roman-Hinglish string exactly as a user would type it; no pre-processing applied.
 - `ref_display` — the expected `display_form` output: human-readable mixed script, with Devanagari for Hindi tokens, English for English tokens, original casing for brands/names.
 - `ref_tts` — the expected `tts_form` output: fully phonetic Devanagari rendering, ready for a TTS synthesizer; all brand/number tokens expanded to spoken Hindi or English words.
-- `category` — one of the eight category slugs above; a row may carry a pipe-separated list for multi-category sentences (`code-switch|brand-mixing`).
+- `category` — exactly one of the 11 category slugs above. Sentences that exercise several challenges at once use the dedicated `mixed` slug rather than a pipe-separated list. (A future schema revision may allow multi-label rows; the harness does not require it today.)
 - `notes` — free text; records adjudicator names, date, open ambiguity decisions, and any provenance if vocabulary derived from Dakshina.
 
 **Multi-reference extension (V1+):** When a sentence has more than one valid normalization, additional reference columns are appended: `ref_display_2`, `ref_tts_2`, etc. The evaluation harness checks against all supplied references. See Section 3 for methodology.
@@ -69,7 +74,7 @@ Example rows (illustrative):
 
 ```tsv
 input	ref_display	ref_tts	category	notes
-bhai kal mera intv h paytm me	भाई कल मेरा interview है Paytm में	भाई कल मेरा इंटरव्यू है पे-टी-एम में	code-switch|brand-mixing	seed; adj: maintainer
+bhai kal mera intv h paytm me	भाई कल मेरा interview है Paytm में	भाई कल मेरा इंटरव्यू है पे-टी-एम में	code-switch	seed; adj: maintainer
 ```
 
 ---
@@ -122,7 +127,7 @@ Each metric is defined precisely below. All metrics are computed per-sentence an
 token_classification_accuracy = correct_category_tokens / total_tokens
 ```
 
-**Scope:** Requires a per-token annotated gold set (category labels per token, not just sentence-level). Currently the 6-row bench does not have per-token category annotation. Add in V1.
+**Scope:** Requires a per-token annotated gold set (category labels per token, not just sentence-level). The current 43-sentence bench carries one category label per sentence, not per token. Add per-token annotation in V1.
 
 **Caveat:** Category assignment is a prerequisite for all downstream stages; errors here cascade. Report separately for each Category enum value to expose which categories are weak.
 
@@ -160,7 +165,7 @@ Matching against *any* accepted reference (Section 2.2). Whitespace-normalized; 
 
 ### 3.4 Name and Brand Pronunciation Accuracy
 
-**Definition:** For tokens in the `names` and `brand-mixing` categories, fraction where `tts_form` exactly matches an accepted reference TTS rendering.
+**Definition:** For tokens in the `name` and `brand` categories, fraction where `tts_form` exactly matches an accepted reference TTS rendering.
 
 Reported separately from the aggregate exact-match because name/brand handling is the most consequential failure mode for TTS — mispronouncing a person's name or a brand creates a trust failure with end-users.
 
@@ -215,16 +220,19 @@ nbest_coverage@5    : {score}
 token_classif_acc   : {score}  [if per-token annotation available]
 
 Per-category breakdown:
-  names          : {em@display} / {em@tts}
-  brand-mixing   : ...
+  roman-hindi    : {em@display} / {em@tts}
+  verb           : ...
+  name           : ...
+  brand          : ...
+  numeral        : ...
+  acronym        : ...
+  abbrev         : ...
+  question       : ...
+  mixed          : ...
   code-switch    : ...
-  numerals       : ...
-  dates          : ...
-  addresses      : ...
-  SMS-abbrev     : ...
-  ambiguity-traps: ...
+  address        : ...
 
-Notes: {any known limitations, e.g., "ambiguity-trap score expected ~0.5 in V1 by design"}
+Notes: {any known limitations, e.g., "address tts EM is 0.000 in V1 by design — multi-word locality handling is unimplemented"}
 ```
 
 ### 4.3 Regression Gating in CI
@@ -233,19 +241,44 @@ Every PR triggers CI which runs `run_bench` and compares the result against the 
 
 Gating rule: any metric drop > 1% on any category blocks the PR. The PR author must either fix the regression or file an explicit override with a documented justification in the PR description. Overrides are tracked in git history and reviewed at the next minor release.
 
-This gate applies even when the bench has only 6 rows. A score drop on 6 rows means a real regression in the code or data; it cannot be dismissed as statistical noise at that scale.
+This gate applies at the current 43-row scale. A score drop on 43 rows means a real regression in the code or data; it cannot be dismissed as statistical noise at that scale.
 
-### 4.4 Honesty About the Current 6-Row Score
+### 4.4 Honesty About the Current 43-Sentence Score
 
-**The current bench score of 1.000 (100% across all metrics) means precisely nothing about real-world capability.**
+**Current headline result (engine vs. `eval/bench_mini/sentences.tsv`, 43 sentences, 11 categories):**
 
-These 6 rows were selected by the maintainer who also wrote the engine. They cover vocabulary present in the seed lexicons. They do not cover:
-- Out-of-vocabulary Roman-Hindi words (the vast majority of real Hinglish).
-- Ambiguous tokens requiring context.
+```
+exact_match@display : 0.930  (n=43)
+exact_match@tts     : 0.884  (n=43)
+```
+
+Per-category exact-match (display / tts):
+
+| Category | Rows | display EM | tts EM |
+|---|---|---|---|
+| roman-hindi | 5 | 1.000 | 1.000 |
+| verb | 2 | 1.000 | 1.000 |
+| name | 4 | 1.000 | 1.000 |
+| brand | 6 | 1.000 | 1.000 |
+| numeral | 4 | 1.000 | 1.000 |
+| acronym | 4 | 1.000 | 1.000 |
+| abbrev | 3 | 1.000 | 0.667 |
+| question | 3 | 1.000 | 1.000 |
+| mixed | 3 | 1.000 | 1.000 |
+| code-switch | 7 | 0.714 | 0.714 |
+| address | 2 | 0.500 | 0.000 |
+
+Reproduce with: `python -m openhinglish.eval.run_bench`.
+
+**What this score does and does not mean.** 0.93 display EM is a real, reproducible number — meaningfully better than the smoke-test scores of earlier seed sets, and it surfaces honest weak spots instead of hiding them: **address** is the worst category (0.500 display, 0.000 tts — multi-word locality tokens are essentially unimplemented), and **code-switch** sits at 0.714 because English-word boundaries inside Hindi sentences are still imperfect. `abbrev` is perfect on display but drops one row on the stricter full-Devanagari TTS channel.
+
+But these 43 rows were authored by the maintainer who also wrote the engine, and they lean toward vocabulary the lexicons already cover. They do **not** adequately cover:
+- Out-of-vocabulary Roman-Hindi words (the long tail of real Hinglish).
+- Ambiguous tokens requiring context (no dedicated `ambiguity-traps` slice yet — see §1.2).
 - Regional spelling variants.
 - Any language other than Hindi + English.
 
-Quoting a 1.000 bench score to a user evaluating OpenHinglish for a production use case would be misleading. All communications about the current score must include the context that the bench size is 6 rows and the seed vocabulary is ~30 items. The honest claim is: "the pipeline is structurally sound; real accuracy on unseen Hinglish is currently unmeasured and expected to be low."
+The honest framing for any production evaluation: "0.93 display EM on a 43-sentence, single-author benchmark is an encouraging early signal; address and code-switch are known weak spots; accuracy on unseen, multi-annotator Hinglish is expected to be lower and is the V1 measurement goal." Do not quote 0.93 as a production accuracy guarantee.
 
 ---
 
@@ -291,15 +324,15 @@ An open public benchmark is gameable. Specific risks:
 
 - **Teaching to the test:** A system specifically tuned on the benchmark sentences will show inflated scores. Mitigation: maintain a private hold-out set (not publicly released) that is scored by the governance committee for any system claiming a leaderboard top-3 position.
 - **Reference expansion gaming:** Adding references that happen to match a specific system's outputs inflates that system's score without improving the benchmark. The multi-maintainer approval process for reference additions provides a partial guard; the governance committee checks proposed additions for conflict of interest.
-- **Category gaming:** A system that excels at `numerals` but is catastrophic on `ambiguity-traps` can still post competitive aggregate scores. Per-category reporting (mandatory) makes this transparent; the leaderboard should surface per-category results by default.
+- **Category gaming:** A system that excels at `numeral` but is catastrophic on `address` (or a future `ambiguity-traps` slice) can still post competitive aggregate scores. Per-category reporting (mandatory) makes this transparent; the leaderboard should surface per-category results by default.
 
 ---
 
 ## 6. Challenged Assumptions / Risks / Open Questions
 
-1. **"A benchmark of 6 rows growing to 300 is straightforward."** Multi-annotator adjudication of 300 Hinglish sentences to the standard required (per-token labels, dual annotation, IAA reporting) is 50–100 person-hours minimum. With a bus-factor-1 project, this is a multi-month commitment. The V1 timeline must reflect this honestly.
+1. **"A benchmark of 43 rows growing to 300 is straightforward."** Multi-annotator adjudication of 300 Hinglish sentences to the standard required (per-token labels, dual annotation, IAA reporting) is 50–100 person-hours minimum. With a bus-factor-1 project, this is a multi-month commitment. The V1 timeline must reflect this honestly.
 
-2. **"The category taxonomy is complete."** The eight categories listed are a reasonable starting point but almost certainly incomplete. Missing candidates: honorifics (`ji`, `sahab`), onomatopoeia, transliterated English idioms (`game changer` → correct Devanagari?), regional greetings (`namaskar` vs. `sat sri akal`). The category set should be treated as open and versioned.
+2. **"The category taxonomy is complete."** The 11 current categories are a reasonable starting point but almost certainly incomplete, and lack a dedicated `ambiguity-traps` slice (see §1.2). Missing candidates: honorifics (`ji`, `sahab`), onomatopoeia, transliterated English idioms (`game changer` → correct Devanagari?), regional greetings (`namaskar` vs. `sat sri akal`). The category set should be treated as open and versioned.
 
 3. **"N-best coverage at k=5 is a meaningful proxy for 'the correct answer is reachable.'"** Only if the engine's alternatives are genuinely diverse and not all minor variants of the same wrong answer. If the engine is confidently wrong, all 5 alternatives may be wrong together. N-best coverage is a necessary condition for "the engine has the right answer somewhere" but not sufficient.
 

@@ -1,8 +1,8 @@
 # OpenHinglish — Master Roadmap
 
-> **Status as of 2026-06:** Engine is early-functional — 51 unit tests passing, ~1,300+
+> **Status as of 2026-06:** Engine is early-functional — 51 unit tests passing, ~1,400+
 > lexicon entries, deterministic context disambiguator (V3) implemented, REST API + web UI
-> + CLI shipped, honest 43-sentence benchmark at ~0.81 EM. Not production-ready; lexicon
+> + CLI shipped, honest 43-sentence benchmark at 0.93 display EM (0.88 TTS). Not production-ready; lexicon
 > coverage remains the main gap. This document is a living plan, not a promise sheet.
 > See the [Progress as of 2026-06](#progress-as-of-2026-06) section below for a version-by-version status snapshot.
 
@@ -123,11 +123,11 @@ done but the version as a whole is not. "NOT STARTED" means nothing has been bui
 | Version | Theme | Status | Notes |
 |---|---|---|---|
 | **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best, traces | **DONE** | 51 tests passing (up from 32); original 6-row bench superseded by V5 work |
-| **V1 "Usable Hindi+English"** | Scale lexicon; real-world coverage | **IN PROGRESS** | ~1,300+ entries now (roman_hindi ~460+, verbs, function words, English, names, brands); target ~10k via Dakshina; bench at 43 sentences, overall EM ≈ 0.81 — real gaps remain (addresses, verb forms, multi-word abbreviations, large numbers) |
+| **V1 "Usable Hindi+English"** | Scale lexicon; real-world coverage | **IN PROGRESS** | ~1,400+ entries now (roman_hindi ~470+, verbs, function words, English, names, brands); target ~10k via Dakshina; bench at 43 sentences, display EM 0.93 / TTS EM 0.88 — real gaps remain (multi-word addresses, code-switch boundaries, multi-word abbreviations) |
 | **V2 "Multilingual"** | Marathi, Punjabi, Gujarati, Bengali, Tamil, Telugu | **SCAFFOLD ONLY** | Marathi + Punjabi seed lexicons exist in the data directory; language-detection and pipeline wiring NOT yet implemented; no bench rows for either language |
 | **V3 "Context-aware"** | Learned disambiguator, NER, punctuation restoration | **STARTED** | Deterministic neighbour-context disambiguator is implemented and resolves ambiguous tokens (e.g. "main road" vs "main ghar") via rule-based logic; learned ML layer is NOT started — requires labelled data and GPU training, neither of which is available yet |
 | **V4 "Ecosystem"** | Adapters, hosted API, JS/WASM port | **PARTIAL** | Done: REST API server (`api/server.py`, `POST /normalize`, `GET /health`), zero-dep web test console (`api/webui.py`), CLI (`api/cli.py`), experimental IndicF5 audio adapter (`adapters/indicf5.py`, optional `[tts]` extra). NOT started: hosted/public API endpoint, JavaScript/WASM port |
-| **V5 "The Standard"** | IndianTTSBench public leaderboard, governance | **STARTED** | `IndianTTSBench-mini` has grown to 43 gold sentences; honest overall EM ≈ 0.81 (previous 1.000 figure was over 6 cherry-picked rows and has been retired); benchmark exposes real engine gaps. NOT started: public leaderboard hosting, community governance structure |
+| **V5 "The Standard"** | IndianTTSBench public leaderboard, governance | **STARTED** | `IndianTTSBench-mini` has grown to 43 gold sentences across 11 categories; honest display EM 0.93 / TTS EM 0.88 (the earlier 1.000 figure was over 6 cherry-picked rows and has been retired); benchmark exposes real engine gaps (address, code-switch). NOT started: public leaderboard hosting, community governance structure |
 
 ---
 
@@ -163,7 +163,7 @@ Exit criteria define what must be empirically true before the version tag is pub
   है Paytm में"` and `tts="भाई कल मेरा इंटरव्यू है पे-टी-एम में"`.
 - Bench-mini reported 1.000 n-best coverage over its 6 rows (trivially true: rows were
   selected to match seed vocab — this figure has since been retired in favour of the
-  honest 43-sentence benchmark at ~0.81 EM introduced in V5 work).
+  honest 43-sentence benchmark at 0.93 display EM / 0.88 TTS EM introduced in V5 work).
 
 **Known limitations at exit:** Real-world coverage on arbitrary Hinglish is near-zero.
 The 1.000 bench score was over 6 curated rows, not a capability claim — see V5 progress
@@ -299,10 +299,11 @@ NOT started.
 **Theme:** Governance maturity and community ownership; OpenHinglish as public
 infrastructure, not a solo project.
 
-**Current state (2026-06):** `IndianTTSBench-mini` has grown to **43 gold sentences**.
-The overall exact-match score is honestly reported as **~0.81** — the previous 1.000
-figure (over 6 cherry-picked rows) has been retired as misleading. The benchmark exposes
-real engine gaps: addresses, some verb forms, multi-word abbreviations, large numbers.
+**Current state (2026-06):** `IndianTTSBench-mini` has grown to **43 gold sentences**
+across 11 categories. The exact-match score is honestly reported as **0.93 display / 0.88 TTS**
+— the previous 1.000 figure (over 6 cherry-picked rows) has been retired as misleading.
+The benchmark exposes real engine gaps: multi-word addresses (worst category), code-switch
+boundaries, and multi-word abbreviations on the TTS channel.
 Public leaderboard hosting and community governance are NOT started.
 
 **Deliverables:**
@@ -333,13 +334,13 @@ commitments. They exist to force early falsification, not to impress anyone.
 
 | Metric | V0.1 | V1 | V2 | V3 | V4 | V5 |
 |---|---|---|---|---|---|---|
-| Lexicon entries (Roman-Hindi) | ~13 seed → **~1,300+ now** | 10 000+ | 10 000+ (stable) | same | same | same |
+| Lexicon entries (Roman-Hindi) | ~13 seed → **~470+ now** (all lexicons ~1,400+) | 10 000+ | 10 000+ (stable) | same | same | same |
 | Names gazetteer entries | 4 seed → **growing** | 5 000+ | 5 000+ | same + NER | same | same |
 | Brands gazetteer entries | 4 seed → **growing** | 500+ | 500+ | same | same | same |
 | Bench size (gold rows) | 6 seed → **43 now** | 300+ | 300+ + 6×50 per lang | 300+ + adversarial | same | public leaderboard |
-| n-best coverage @k=3 (Hindi+Hinglish bench) | ~~1.000 (6 rows)~~ → **~0.81 EM (43 rows)** | ≥ 85% | ≥ 85% Hindi; ≥ 70% new langs | ≥ 90% Hindi | same | same |
-| Display-accuracy @k=1 | **~0.81 EM (honest, 43 rows)** | ≥ 80% | ≥ 80% Hindi | ≥ 85% | same | public |
-| TTS-accuracy @k=1 | unmeasured separately | ≥ 75% | ≥ 75% Hindi | ≥ 82% | same | public |
+| n-best coverage @k=3 (Hindi+Hinglish bench) | ~~1.000 (6 rows)~~ → **0.93 display EM (43 rows)** | ≥ 85% | ≥ 85% Hindi; ≥ 70% new langs | ≥ 90% Hindi | same | same |
+| Display-accuracy @k=1 | **0.93 EM (honest, 43 rows)** | ≥ 80% | ≥ 80% Hindi | ≥ 85% | same | public |
+| TTS-accuracy @k=1 | **0.88 EM (honest, 43 rows)** | ≥ 75% | ≥ 75% Hindi | ≥ 82% | same | public |
 | Ambiguity resolution accuracy | N/A | N/A | N/A | ≥ 80% | same | same |
 | CPU latency p95 (per utterance) | unmeasured | ≤ 20 ms | ≤ 25 ms | ≤ 50 ms | ≤ 50 ms (WASM: ≤ 100 ms) | same |
 | PyPI downloads / month | 0 | first publish | ≥ 200 | ≥ 500 | ≥ 1 000 | ≥ 5 000 |
@@ -363,7 +364,7 @@ direction.
 ### 1. Coverage is still limited — engine is not yet broadly useful
 
 The 7-stage pipeline is architecturally sound and 51 tests pass. Lexicons have grown to
-~1,300+ entries and the honest 43-sentence benchmark shows ~0.81 EM. That is real
+~1,400+ entries and the honest 43-sentence benchmark shows 0.93 display EM (0.88 TTS). That is real
 progress over V0.1, but on arbitrary, uncurated Hinglish transcripts most uncommon tokens
 will still fall through to UNKNOWN or receive low-confidence outputs. The real scale-up
 work is in V1 (Dakshina integration, names and brands gazetteers).

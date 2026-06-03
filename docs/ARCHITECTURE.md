@@ -1,8 +1,8 @@
 # OpenHinglish — Architecture
 
-> Status: V0.1 "Foundation" (deterministic pipeline complete; seed lexicons; 32 tests pass).
-> This document is authoritative for the V0.1 implementation and covers the planned shape of V1–V4.
-> Read alongside `_BLUEPRINT_BRIEF.md` (canonical facts) and `superpowers/specs/2026-06-02-openhinglish-normalization-engine-design.md` (design rationale).
+> Status: early-functional (deterministic pipeline complete; ~1,400+ lexicon entries; 51 tests pass).
+> This document is authoritative for the current implementation and covers the planned shape of V1–V4.
+> Read alongside [BENCHMARK.md](BENCHMARK.md) (evaluation methodology) and [DATASETS.md](DATASETS.md) (data provenance).
 
 ---
 
@@ -416,8 +416,9 @@ per-category exact-match and CER via `eval/metrics.py`. Growing the bench is add
 TSV. The benchmark is designed to be a community-maintained public artefact (IndianTTSBench full
 standard, V5 roadmap goal).
 
-**Warning:** the current 1.000 bench score on 6 seed rows is not a capability claim. Real accuracy
-on arbitrary Hinglish is near-zero until V1 lexicons are scaled.
+**Warning:** the current 0.93 display EM (0.88 TTS) on 43 single-author sentences is an early signal,
+not a production capability claim. Real accuracy on arbitrary, multi-annotator Hinglish is expected to
+be lower until V1 lexicons are scaled.
 
 ### Learned Disambiguator (V3 — "Context-aware")
 
@@ -560,10 +561,11 @@ The current architecture relies on S2 reclassifying typo-corrected tokens before
 If S2 fires incorrectly (false typo detection), a Hindi word could be pushed through the English
 TTS path. The `cutoff=0.85` guard is conservative but not infallible.
 
-**R5 — The bench score is unfalsifiable at V0.1 scale.**
-1.000 exact-match on 6 hand-picked seed rows proves the pipeline runs; it does not prove
-correctness on real text. Until the bench grows to 300+ human-verified sentences covering
-out-of-vocabulary tokens and ambiguity traps, the metric should not be cited in any public claim.
+**R5 — The bench score is a limited signal at current scale.**
+0.93 display EM (0.88 TTS) on 43 single-author sentences proves the pipeline works and surfaces
+real weak spots (address, code-switch); it does not prove correctness on arbitrary real text. Until
+the bench grows to 300+ human-verified, multi-annotator sentences covering out-of-vocabulary tokens
+and ambiguity traps, the metric must always be cited with that caveat.
 
 **R6 — Bus factor = 1 is the top existential risk.**
 A 5-year infrastructure project with a solo maintainer is not a project — it is a prototype that

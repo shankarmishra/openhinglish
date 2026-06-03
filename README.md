@@ -6,10 +6,17 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange)](docs/MASTER_ROADMAP.md)
 
+`from openhinglish import normalize` → clean Devanagari for any TTS engine. **No GPU. No API key. No network calls. MIT-licensed code.**
+
+- **0.93 display exact-match** on a 43-sentence honest benchmark (0.88 on the stricter full-Devanagari TTS channel) — reproducible with one command: `python -m openhinglish.eval.run_bench`.
+- **Two outputs from one call** — a human-readable `display` (keeps `interview`, `Paytm` in Roman) *and* a fully-phonetic `tts` Devanagari string. Most transliterators give you only one.
+- **One import to feed IndicF5** — `normalize(text).tts` is exactly the clean Devanagari that AI4Bharat IndicF5, Indic-Parler-TTS, and CosyVoice2 expect.
+- **Readable, fixable, deterministic** — unlike a neural transliterator (e.g. IndicXlit), every token carries a `trace[]` showing which pipeline stage changed it plus n-best alternatives with confidence, so you can read *why* — and fix a wrong word with a one-line TSV edit, no retraining.
+
 ---
 
 > **Early-functional — not production-ready.**
-> The 7-stage deterministic pipeline is working and **51 unit tests pass**. Lexicons have grown from ~35 seed entries to **~1,300+ entries** (roman_hindi ~460+, plus verb conjugations, function words, English, names including cities, and brands). A **deterministic context disambiguator (V3)** is implemented, resolving structurally ambiguous tokens such as "main road" vs "main ghar" by neighbour context. A **REST API server, web test console, and CLI** are available. A **multilingual scaffold** (Marathi + Punjabi seed lexicons) exists but is not yet wired into the engine. The honest benchmark is **43 gold sentences at ~0.81 exact-match** — real gaps remain in addresses, some verb forms, multi-word abbreviations, and large numbers. **Not production-ready.** The highest-value contribution right now is adding lexicon entries — no coding required.
+> The 7-stage deterministic pipeline is working and **51 unit tests pass**. Lexicons have grown from ~35 seed entries to **~1,400+ entries** (roman_hindi ~470+, plus verb conjugations, function words, English, names including cities, and brands). A **deterministic context disambiguator (V3)** is implemented, resolving structurally ambiguous tokens such as "main road" vs "main ghar" by neighbour context. A **REST API server, web test console, and CLI** are available. A **multilingual scaffold** (Marathi + Punjabi seed lexicons) exists but is not yet wired into the engine. The honest benchmark is **43 gold sentences at 0.93 display exact-match** (0.88 on the stricter full-Devanagari TTS channel) — real gaps remain in multi-word addresses, some code-switch boundaries, and multi-word abbreviations. **Not production-ready.** The highest-value contribution right now is adding lexicon entries — no coding required.
 
 ---
 
@@ -35,40 +42,40 @@ Given the input `bhai kal mera intv h paytm me`, OpenHinglish returns **two stru
 ```python
 from openhinglish import normalize
 
-result = normalize("bhai kal mera intv h paytm me")
+result = normalize("main road pe intv h")
 
 print(result.display)
-# भाई कल मेरा interview है Paytm में
+# main road पर interview है
 
 print(result.tts)
-# भाई कल मेरा इंटरव्यू है पे-टी-एम में
+# मेन रोड पर इंटरव्यू है
 
 print(result.confidence)
-# 0.87  (example; actual value depends on lexicon coverage)
+# 0.466  (aggregate; depends on how confidently each token resolves)
 
 # Per-token detail
 for tok in result.tokens:
-    print(f"{tok.surface:12} → display={tok.display_form:20} tts={tok.tts_form:20} conf={tok.confidence:.2f}")
-# bhai         → display=भाई                  tts=भाई                  conf=0.95
-# kal          → display=कल                   tts=कल                   conf=0.92
-# mera         → display=मेरा                 tts=मेरा                 conf=0.93
-# intv         → display=interview            tts=इंटरव्यू             conf=0.81
-# h            → display=है                   tts=है                   conf=0.90
-# paytm        → display=Paytm               tts=पे-टी-एम             conf=0.78
-# me           → display=में                  tts=में                   conf=0.88
+    print(f"{tok.surface:6} category={tok.category.name:11} display={tok.display_form:11} tts={tok.tts_form:11} conf={tok.confidence:.2f}")
+# main   category=ENGLISH     display=main        tts=मेन         conf=0.43
+# road   category=ENGLISH     display=road        tts=रोड         conf=0.43
+# pe     category=HINDI_ROMAN display=पर          tts=पर          conf=0.75
+# intv   category=ENGLISH     display=interview   tts=इंटरव्यू    conf=0.10
+# h      category=HINDI_ROMAN display=है          tts=है          conf=0.62
 
-# N-best alternatives for an ambiguous token
-for alt in result.tokens[4].alternatives:
-    print(alt.form, alt.confidence)
-# है   0.90
-# हे   0.62
+# N-best alternatives — "main" could also be Hindi मैं ("I"); the context
+# disambiguator picked ENGLISH here but keeps the alternative with its score.
+for alt in result.tokens[0].alternatives:
+    print(alt.category.name, alt.display_form, alt.tts_form, round(alt.score, 2))
+# HINDI_ROMAN main मैं 0.9
 
 # Explainability trace — see exactly which pipeline stage made each decision
-for step in result.tokens[3].trace:
+for step in result.tokens[0].trace:
     print(step)
-# S2: abbrev_expand intv → interview
-# S3: english_tts_lookup interview → इंटरव्यू
-# S4: skip (not a name/brand token)
+# S0: tokenized as UNKNOWN
+# S1: classified HINDI_ROMAN (score=0.90, 1 alt)
+# V3: disambiguated 'main' -> ENGLISH (context)
+# S3: english tts main -> मेन
+# S6: assembled into display/tts
 ```
 
 ---
@@ -118,19 +125,20 @@ cd openhinglish
 **Windows (PowerShell):**
 ```powershell
 python -m venv .venv
-.venv\Scripts\python -m pip install -e ".[dev,cli,server]"
+.venv\Scripts\python -m pip install -e ".[dev,server]"
 ```
 
 **Linux / macOS:**
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev,cli,server]"
+pip install -e ".[dev,server]"
 ```
 
 - `dev` — test suite (pytest). Required to run `pytest tests/`.
-- `cli` — `typer` dependency for `python -m openhinglish.api.cli`.
 - `server` — `fastapi` + `uvicorn` for `python -m openhinglish.api.server` and `python -m openhinglish.api.webui`. Also needed for the full 51-test suite.
+
+The CLI (`python -m openhinglish.api.cli`) is pure standard library — no extra dependency needed.
 
 Requires **Python 3.11 or newer**. No GPU, no CUDA, no external model downloads.
 
@@ -154,9 +162,11 @@ result = normalize("yaar mujhe 2 din me reply karo")
 print(result.display)   # यार मुझे 2 दिन में reply करो
 print(result.tts)       # यार मुझे दो दिन में रिप्लाई करो
 
-# With config: spell numbers as Hindi words
-result = normalize("call me at 5 pm", config=Config(number_words_lang="hi"))
-print(result.tts)       # कॉल मी ऐट पाँच पीएम
+# With config: spell numbers as English words in the TTS output.
+# (number_words_lang defaults to "hindi" — i.e. number words in Devanagari.)
+result = normalize("mujhe 2 din chahiye", config=Config(number_words_lang="english"))
+print(result.tts)       # मुझे two दिन चाहिए
+# (default "hindi" would give: मुझे दो दिन चाहिए)
 
 # Structured result
 print(result.confidence)          # aggregate confidence (float, 0–1)
@@ -221,7 +231,7 @@ Full details: [docs/MASTER_ROADMAP.md](docs/MASTER_ROADMAP.md)
 | Version | Theme | Status |
 |---|---|---|
 | **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best + traces | **Done** |
-| **V1 "Usable Hindi+English"** | ~1,300+ entries now, target 10k+ (Dakshina); 43-sentence benchmark at ~0.81 EM | **In progress** |
+| **V1 "Usable Hindi+English"** | ~1,400+ entries now, target 10k+ (Dakshina); 43-sentence benchmark at 0.93 display EM | **In progress** |
 | **V2 "Multilingual"** | Marathi + Punjabi seed lexicons exist; not wired into engine yet | **Scaffold only** |
 | **V3 "Context-aware"** | Deterministic neighbour-context disambiguator done; learned ML layer not started | **Started** |
 | **V4 "Ecosystem"** | REST API + web UI + CLI + experimental IndicF5 adapter done; hosted API + JS port not started | **Partial** |

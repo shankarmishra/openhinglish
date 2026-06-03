@@ -4,8 +4,13 @@ OpenHinglish is a pure-Python text-processing library with no network or filesys
 at runtime. Still, we take a few classes of issue seriously and welcome responsible disclosure.
 
 ## Reporting a vulnerability
-Please report security issues **privately** to **xshankarmishra@gmail.com**. Do **not** open a
-public issue for a security problem.
+Please report security issues **privately** — do **not** open a public issue for a security problem.
+
+**Preferred:** use GitHub's private vulnerability reporting on this repository
+([Security tab → "Report a vulnerability"](https://github.com/shankarmishra/openhinglish/security/advisories/new)).
+This keeps the report confidential between you and the maintainer, with no email exposed.
+
+If you cannot use GitHub advisories, you may email **xshankarmishra@gmail.com** as a fallback.
 
 Include, if possible:
 - A description of the issue and its impact.

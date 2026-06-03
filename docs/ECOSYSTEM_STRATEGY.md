@@ -244,7 +244,7 @@ This is a realistic plan for a solo maintainer with a full-time job. Not everyth
 - Do not spam Indian AI Discord servers with unsolicited announcements before V1.
 - Do not claim production-readiness before the lexicons are at V1 scale (10k+ entries).
 - Do not create a Twitter/X presence that cannot be maintained consistently. One good GitHub README is worth more than 50 inconsistent tweets.
-- Do not pursue conference submissions with the V0.1 6-row benchmark. It will not pass peer review.
+- Do not pursue conference submissions with the current 43-sentence single-author benchmark. It will not pass peer review until it reaches V1 scale (300+ multi-annotator sentences).
 
 ---
 
@@ -313,9 +313,9 @@ Realistic sequencing:
 
 Announcing before the library has real coverage will burn the first-impression opportunity. The outreach plan in Section 6 is staged for this reason.
 
-### 8.4 The 1.000 benchmark score is misleading
+### 8.4 The benchmark score needs an honest disclaimer
 
-The current IndianTTSBench-mini scores 1.000 on 6 hand-picked rows. This number should not appear in any public-facing material without an explicit disclaimer. If it is cited as evidence of quality before the benchmark is at V1 scale (300+ diverse sentences), it will damage credibility with anyone who actually reads the methodology.
+The current IndianTTSBench-mini scores **0.93 display exact-match (0.88 TTS) on 43 single-author sentences** across 11 categories. This is a real, reproducible signal — and it honestly surfaces weak spots (address 0.50 display / 0.00 TTS; code-switch 0.71). But it must never be cited as a production accuracy guarantee. Until the benchmark reaches V1 scale (300+ diverse, multi-annotator sentences), always pair the number with the context that it is single-author and lexicon-leaning; quoting a bare score as evidence of quality will damage credibility with anyone who reads the methodology.
 
 ### 8.5 CC-BY-SA from Dakshina could limit commercial embedding
 

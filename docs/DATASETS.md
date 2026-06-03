@@ -1,7 +1,7 @@
 # OpenHinglish — Datasets Reference
 
 > **Canonical source of truth** for every data dependency in the project.
-> Read alongside `_BLUEPRINT_BRIEF.md` (authoritative) and `DATA_LICENSES.md` (per-file provenance ledger).
+> Read alongside `DATA_LICENSES.md` (per-file provenance ledger).
 > Senior, honest tone: nothing is oversold; risks are stated plainly.
 
 ---
@@ -19,19 +19,19 @@ Each version of OpenHinglish demands a specific data investment. The table below
 | **Census / UIDAI name frequency data** | V1+ | expand | expand | expand | expand | Supplements Wikidata for Indian given-name coverage, particularly regional names |
 | **Mozilla Common Voice (text)** | supplement | expand | expand | reuse | reuse | Validated Hindi/English utterance text for spell-norm and classifier training data |
 | **AI4Bharat IndicVoices / IndicVoices-R** | supplement | expand | expand | reuse | reuse | Reference utterance text; CC-BY-4.0 so commercial use is safe with attribution |
-| **SMS/chat abbreviation corpus** | core | reuse | reuse | reuse | reuse | S2 abbrev expansion table; V1 target ≥ 1 000 entries (currently 6 seeds) |
+| **SMS/chat abbreviation corpus** | core | reuse | reuse | reuse | reuse | S2 abbrev expansion table; V1 target ≥ 1 000 entries (currently ~70) |
 | **Hand-curated GOLD EVAL sentences** | core | grow | grow | grow | full | IndianTTSBench-mini; V1 target ≥ 300 verified; V5 target ≥ 1 000+ with public leaderboard |
 | **Per-language translit/G2P tables** (Marathi, Punjabi, Gujarati, Bengali, Tamil, Telugu) | — | core | reuse | reuse | reuse | New language frontends in V2; reuse the same pipeline skeleton |
 | **HiACC Hinglish code-switch corpus (2025)** | candidate | candidate | core | reuse | reuse | Code-switch eval; license UNVERIFIED — confirm before any use |
 | **Learned disambiguator training data** | — | — | core | reuse | reuse | Feeds the pluggable `Disambiguator` at Path C (V3); must be permissively licensed |
 
-**Current state (V0.1 "Foundation"):** Seed lexicons only — ~13 Roman-Hindi words, 6 SMS abbreviations, 4 names, 4 brands, ~8 English words. Real-world coverage is near-zero. The V1 data-scaling effort is the single highest-leverage task in the project.
+**Current state (early-functional):** Lexicons have grown well past the original seeds — ~470+ Roman-Hindi words, ~70 SMS abbreviations, ~200 names, ~100 brands, ~260 English-TTS words (~1,400+ entries total). Real-world coverage on the long tail of uncommon tokens is still limited. The V1 data-scaling effort (target ~10k via Dakshina) remains the single highest-leverage task in the project.
 
 ---
 
 ## 2. License Status Table
 
-Every source's verified license, what it enables, and what it restricts. **This table is canonical; expand but never contradict `_BLUEPRINT_BRIEF.md`.**
+Every source's verified license, what it enables, and what it restricts. **This table is the canonical license ledger; expand but keep it consistent with `DATA_LICENSES.md`.**
 
 | Source | License | Verified? | Commercial use | Modification | Distribution | Key restriction |
 |---|---|:---:|:---:|:---:|:---:|---|
@@ -45,7 +45,7 @@ Every source's verified license, what it enables, and what it restricts. **This 
 | **HiACC** (2025 code-switch corpus) | **UNVERIFIED** | No | Unknown | Unknown | Unknown | **Block on use** until license is confirmed. Do not ship any derived artifact. |
 | **OpenSubtitles / web-scraped Hinglish** | Mixed / often restricted | No | No (default) | No | No | Scraping may violate ToS; do not include without explicit permission audit. |
 
-**The standing rule (from `_BLUEPRINT_BRIEF.md`):**
+**The standing rule:**
 
 > Nothing CC-BY-NC enters the release. Code is MIT. Data files carry their source license. Pin commit hashes. Re-verify before every release.
 
@@ -147,7 +147,7 @@ No single open dataset covers Indian SMS abbreviations comprehensively. Build st
 
 This is the most important data artifact in the project. It is also the hardest to build correctly.
 
-**Current state:** 6 seed rows in `eval/bench_mini/sentences.tsv`. These rows test that the pipeline runs; they do not measure real-world capability.
+**Current state:** 43 single-author rows across 11 categories in `eval/bench_mini/sentences.tsv` (0.93 display EM / 0.88 TTS). Large enough to surface real weak spots (address, code-switch) but not yet multi-annotator validated; not a production capability claim.
 
 **V1 target: ≥ 300 human-verified sentences across all benchmark categories.**
 
