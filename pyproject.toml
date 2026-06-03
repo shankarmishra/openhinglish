@@ -15,6 +15,12 @@ dependencies = []
 cli = ["typer>=0.12"]
 server = ["fastapi>=0.110", "uvicorn>=0.29"]
 dev = ["pytest>=8"]
+tts = [
+    "torch>=2.2",
+    "transformers>=4.40",
+    "soundfile>=0.12",
+    "huggingface-hub>=0.23",
+]
 
 [project.scripts]
 openhinglish = "openhinglish.api.cli:app"
