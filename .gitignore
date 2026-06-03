@@ -6,3 +6,7 @@ build/
 *.egg-info/
 
 _testout.txt
+
+# internal planning / strategy (kept local, not public)
+docs/superpowers/
+docs/outreach/

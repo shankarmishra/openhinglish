@@ -29,4 +29,9 @@ openhinglish = "openhinglish.api.cli:app"
 where = ["src"]
 
 [tool.setuptools.package-data]
-openhinglish = ["data/lexicons/*.tsv", "data/gazetteers/*.tsv", "eval/bench_mini/*.tsv"]
+openhinglish = [
+    "data/lexicons/*.tsv",
+    "data/lexicons/**/*.tsv",
+    "data/gazetteers/*.tsv",
+    "eval/bench_mini/*.tsv",
+]

@@ -6,7 +6,7 @@ from the repo root after installing the package.
 ## Prerequisites
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,cli,server]"
 ```
 
 ## Scripts

@@ -31,7 +31,7 @@ jobs:
           cache: pip
 
       - name: Install package and dev dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,server]"
 
       - name: Run tests
         run: pytest -v

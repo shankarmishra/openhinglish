@@ -1,9 +1,8 @@
-# OpenHinglish — Repository Structure
+﻿# OpenHinglish — Repository Structure
 
-> Status: V0.1 "Foundation". This document describes the **target** layout (what the repo should
-> look like at V1 GA) as an extension of what already exists. Sections clearly distinguish
-> "already built" from "planned".
-> Read alongside `_BLUEPRINT_BRIEF.md` (canonical facts) and `ARCHITECTURE.md` (pipeline design).
+> Status: V0.1 "Foundation" — updated to reflect actual repo state as of V0.1 GA.
+> Items marked `[planned]` are not yet created; all others exist on `main`.
+> Read alongside `ARCHITECTURE.md` (pipeline design) and `DATASETS.md` (data provenance).
 
 ---
 
@@ -15,15 +14,12 @@ created; their location is specified here so contributors know exactly where to 
 ```
 openhinglish/                              ← repo root
 │
-├── .github/                               [planned]
+├── .github/                               [exists]
 │   ├── workflows/
-│   │   ├── ci.yml                         [planned]  pytest + lint on push/PR
+│   │   ├── ci.yml                         [exists]   pytest on push/PR (ubuntu + windows, py 3.11/3.12)
 │   │   └── publish.yml                    [planned]  PyPI release on version tag
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md                  [planned]
-│   │   ├── data_correction.md             [planned]  for lexicon/gazetteer fixes
-│   │   └── feature_request.md             [planned]
-│   └── PULL_REQUEST_TEMPLATE.md           [planned]
+│   ├── ISSUE_TEMPLATE/                    [exists]
+│   └── PULL_REQUEST_TEMPLATE.md           [exists]
 │
 ├── src/
 │   └── openhinglish/
@@ -51,10 +47,10 @@ openhinglish/                              ← repo root
 │       │   │   ├── english_tts.tsv        [exists]   English word → Devanagari TTS form (6 rows, seed)
 │       │   │   ├── sms_abbrev.tsv         [exists]   SMS abbreviation → expansion (6 rows, seed)
 │       │   │   │
-│       │   │   ├── mr/                    [planned V2]  Marathi lexicons
-│       │   │   │   ├── roman_marathi.tsv
-│       │   │   │   └── marathi_tts.tsv
-│       │   │   ├── pa/                    [planned V2]  Punjabi lexicons
+│       │   │   ├── marathi/                    [exists — scaffold, not yet wired into engine]
+│       │   │   │   ├── roman_marathi.tsv              [exists]
+│       │   │   │
+│       │   │   ├── punjabi/                    [exists — scaffold, not yet wired into engine]
 │       │   │   ├── gu/                    [planned V2]  Gujarati lexicons
 │       │   │   ├── bn/                    [planned V2]  Bengali lexicons
 │       │   │   ├── ta/                    [planned V2]  Tamil lexicons
@@ -77,9 +73,9 @@ openhinglish/                              ← repo root
 │       │       ├── __init__.py            [exists]
 │       │       └── sentences.tsv          [exists]   6 seed rows; grow to 300+ for V1
 │       │
-│       └── api/                           [planned — Task 11]
-│           ├── cli.py                     [planned]  typer CLI: openhinglish "..."
-│           └── server.py                  [planned]  FastAPI POST /normalize
+│       └── api/                           [exists]
+│           ├── cli.py                     [exists]   typer CLI: openhinglish "..."
+│           └── server.py                  [exists]   FastAPI POST /normalize; also webui.py
 │
 ├── tests/
 │   ├── test_types.py                      [exists]
@@ -92,12 +88,14 @@ openhinglish/                              ← repo root
 │   ├── test_s5.py                         [exists]
 │   ├── test_s6.py                         [exists]
 │   ├── test_normalize.py                  [exists]   end-to-end normalize() tests
-│   └── test_metrics.py                    [exists]
-│
-├── examples/                              [planned]
-│   ├── basic_normalization.py             [planned]  5-line hello-world
-│   ├── batch_processing.py                [planned]  normalize a file of sentences
-│   └── inspect_token_trace.py             [planned]  print trace for debugging
+│   ├── test_normalize.py                  [exists]   end-to-end normalize() tests
+│   ├── test_metrics.py                    [exists]
+│   ├── test_disambiguator.py              [exists]
+│   └── test_server.py                     [exists]   skipped when [server] extra absent
+├── examples/                              [exists]
+│   ├── quickstart.py                  [exists]   4 sentences, per-token table
+│   ├── inspect_traces.py              [exists]   per-token trace pretty-print
+│   └── README.md                      [exists]
 │
 ├── docs/
 │   ├── _BLUEPRINT_BRIEF.md                [exists]   canonical internal brief
@@ -110,14 +108,13 @@ openhinglish/                              ← repo root
 │           └── 2026-06-02-openhinglish-normalization-engine.md         [exists]
 │
 ├── pyproject.toml                         [exists]   build config, optional extras, entry points
-├── README.md                              [exists]   placeholder; expand to full README at V1 GA
-├── LICENSE                                [planned]  MIT license text
-├── CONTRIBUTING.md                        [planned]  how to add lexicon/gazetteer entries; PR flow
-├── CODE_OF_CONDUCT.md                     [planned]  Contributor Covenant or equivalent
-├── SECURITY.md                            [planned]  responsible disclosure policy
-├── GOVERNANCE.md                          [planned]  decision-making process; maintainer rights
-├── DATA_LICENSES.md                       [planned — required before PyPI release]
-│                                                     per-file license table; source commit hashes
+├── README.md                              [exists]   production README with install, usage, API reference
+├── LICENSE                                [exists]   MIT license text
+├── CONTRIBUTING.md                        [exists]   how to add lexicon/gazetteer entries; PR flow
+├── CODE_OF_CONDUCT.md                     [exists]   Contributor Covenant
+├── SECURITY.md                            [exists]   responsible disclosure policy
+├── GOVERNANCE.md                          [exists]   decision-making process; maintainer rights
+├── DATA_LICENSES.md                       [exists]   per-file license table
 └── .gitignore                             [exists]
 ```
 

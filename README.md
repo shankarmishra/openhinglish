@@ -118,15 +118,19 @@ cd openhinglish
 **Windows (PowerShell):**
 ```powershell
 python -m venv .venv
-.venv\Scripts\python -m pip install -e ".[dev]"
+.venv\Scripts\python -m pip install -e ".[dev,cli,server]"
 ```
 
 **Linux / macOS:**
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,cli,server]"
 ```
+
+- `dev` — test suite (pytest). Required to run `pytest tests/`.
+- `cli` — `typer` dependency for `python -m openhinglish.api.cli`.
+- `server` — `fastapi` + `uvicorn` for `python -m openhinglish.api.server` and `python -m openhinglish.api.webui`. Also needed for the full 51-test suite.
 
 Requires **Python 3.11 or newer**. No GPU, no CUDA, no external model downloads.
 

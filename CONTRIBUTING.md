@@ -31,8 +31,8 @@ source .venv/bin/activate
 # Windows
 .venv\Scripts\activate
 
-# 3. Install the package in editable mode with dev extras
-pip install -e ".[dev]"
+# 3. Install the package in editable mode with dev + server extras
+pip install -e ".[dev,server]"
 
 # 4. Run the test suite to confirm everything is green
 pytest
