@@ -1,0 +1,5 @@
+gradio>=4.44
+# Install OpenHinglish from PyPI once published:
+#   openhinglish>=0.1
+# Until then, install straight from the GitHub repo:
+openhinglish @ git+https://github.com/shankarmishra/openhinglish.git

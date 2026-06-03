@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange)](docs/MASTER_ROADMAP.md)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/shankarmishra/openhinglish/blob/main/notebooks/quickstart.ipynb)
+
+**▶️ [Try the live demo](https://huggingface.co/spaces/shankarmishra/openhinglish-demo)** — type Hinglish, see both outputs instantly, no install. *(Or run the [Colab](https://colab.research.google.com/github/shankarmishra/openhinglish/blob/main/notebooks/quickstart.ipynb) above.)*
 
 `from openhinglish import normalize` → clean Devanagari for any TTS engine. **No GPU. No API key. No network calls. MIT-licensed code.**
 
