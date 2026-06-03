@@ -293,6 +293,7 @@ Before using this package in a commercial product, read `DATA_LICENSES.md` to un
 
 | Document | Description |
 |---|---|
+| [docs/FAQ.md](docs/FAQ.md) | Frequently asked questions — start here |
 | [docs/MASTER_ROADMAP.md](docs/MASTER_ROADMAP.md) | Full V0.1→V5 roadmap with deliverables and exit criteria |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 7-stage pipeline design and data model |
 | [docs/BENCHMARK.md](docs/BENCHMARK.md) | Evaluation methodology and bench-mini results |

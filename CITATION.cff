@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: >-
+  OpenHinglish: Deterministic, explainable Roman-Hinglish
+  text normalization for Indian NLP and TTS pipelines
+message: >-
+  If you use OpenHinglish in your research or product, please cite it
+  using the metadata below.
+type: software
+authors:
+  - given-names: Shankar
+    family-names: Mishra
+    alias: shankarmishra
+repository-code: 'https://github.com/shankarmishra/openhinglish'
+url: 'https://github.com/shankarmishra/openhinglish'
+abstract: >-
+  OpenHinglish is an open-source, MIT-licensed, CPU-only Python library
+  that normalizes Roman-script Hinglish (Hindi typed in the Latin
+  alphabet, code-switched with English, brand names, abbreviations, and
+  digits) into clean Devanagari. It produces two structured outputs — a
+  human-readable display form and a fully-Devanagari TTS form — with
+  per-token confidence, n-best alternatives, and an explainability trace.
+  The pipeline is deterministic, requires no GPU or runtime ML model, and
+  is designed as the shared pre-processing layer for Indian text-to-speech
+  engines such as IndicF5, Indic-Parler-TTS, and CosyVoice2.
+keywords:
+  - hinglish
+  - text-normalization
+  - transliteration
+  - romanization
+  - devanagari
+  - indic-nlp
+  - code-switching
+  - text-to-speech
+  - hindi
+  - natural-language-processing
+license: MIT
