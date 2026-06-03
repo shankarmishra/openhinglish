@@ -1,0 +1,64 @@
+# EXPERIMENTAL — NOT YET WIRED INTO THE ENGINE
+# Status : SEED data only. Planned for V2.
+# Schema : roman<TAB>gurmukhi<TAB>freq
+# Script : Gurmukhi (Punjabi)
+# Coverage: ~50 high-frequency words; NOT production-scale.
+# Source  : hand-curated from standard Punjabi vocabulary references.
+# License : CC0 — see DATA_LICENSES.md at repo root.
+#
+# To wire this into the engine a future contributor will need to:
+#   1. Scale this lexicon to ≥5 000 entries.
+#   2. Implement Punjabi-specific G2P / transliteration rules.
+#   3. Register the language pack in the pipeline (see docs/LANGUAGE_PACKS.md).
+#
+# roman	gurmukhi	freq
+main	ਮੈਂ	9500
+tu	ਤੂੰ	9000
+oh	ਓਹ	8800
+asi	ਅਸੀਂ	8600
+tusi	ਤੁਸੀਂ	8400
+ki	ਕੀ	9200
+kive	ਕਿਵੇਂ	8000
+kithe	ਕਿੱਥੇ	8200
+kaun	ਕੌਣ	8100
+kado	ਕਦੋਂ	7500
+kyun	ਕਿਉਂ	7800
+haan	ਹਾਂ	9300
+nahi	ਨਹੀਂ	9100
+hai	ਹੈ	9400
+si	ਸੀ	8300
+honda	ਹੁੰਦਾ	7600
+karda	ਕਰਦਾ	7600
+kardi	ਕਰਦੀ	7400
+janda	ਜਾਂਦਾ	7200
+jandi	ਜਾਂਦੀ	7100
+aunda	ਆਉਂਦਾ	7000
+aundi	ਆਉਂਦੀ	6900
+ghar	ਘਰ	8500
+kamm	ਕੰਮ	8400
+paisa	ਪੈਸਾ	8200
+din	ਦਿਨ	8000
+raat	ਰਾਤ	7800
+hun	ਹੁਣ	8700
+baad	ਬਾਅਦ	7600
+te	ਤੇ	9200
+par	ਪਰ	8800
+kyunki	ਕਿਉਂਕਿ	7500
+changa	ਚੰਗਾ	7200
+changi	ਚੰਗੀ	7100
+manda	ਮੰਦਾ	7000
+vadda	ਵੱਡਾ	7300
+chhota	ਛੋਟਾ	7200
+bahut	ਬਹੁਤ	8600
+thoda	ਥੋੜਾ	7400
+ikk	ਇੱਕ	9100
+do	ਦੋ	8500
+tinn	ਤਿੰਨ	8200
+gaya	ਗਿਆ	7800
+aaya	ਆਇਆ	7700
+kha	ਖਾ	7600
+pee	ਪੀ	7500
+ja	ਜਾ	8000
+aa	ਆ	8200
+kar	ਕਰ	8900
+soch	ਸੋਚ	7300

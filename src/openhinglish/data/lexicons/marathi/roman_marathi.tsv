@@ -1,0 +1,64 @@
+# EXPERIMENTAL — NOT YET WIRED INTO THE ENGINE
+# Status : SEED data only. Planned for V2.
+# Schema : roman<TAB>devanagari<TAB>freq
+# Script : Devanagari (Marathi)
+# Coverage: ~50 high-frequency words; NOT production-scale.
+# Source  : hand-curated from standard Marathi vocabulary references.
+# License : CC0 — see DATA_LICENSES.md at repo root.
+#
+# To wire this into the engine a future contributor will need to:
+#   1. Scale this lexicon to ≥5 000 entries.
+#   2. Implement Marathi-specific G2P / transliteration rules.
+#   3. Register the language pack in the pipeline (see docs/LANGUAGE_PACKS.md).
+#
+# roman	devanagari	freq
+mi	मी	9500
+tu	तू	9000
+to	तो	8800
+ti	ती	8600
+aapan	आपण	8400
+aapli	आपली	7800
+aamhi	आम्ही	7600
+tumhi	तुम्ही	7400
+kay	काय	9200
+kasa	कसा	8000
+kashi	कशी	7900
+kase	कसे	7700
+kuthe	कुठे	8200
+kon	कोण	8100
+kadhi	कधी	7500
+ka	का	9000
+ho	हो	9300
+nahi	नाही	9100
+aahe	आहे	9400
+hota	होता	8300
+hoti	होती	8200
+hote	होते	8100
+karto	करतो	7600
+karti	करती	7400
+jato	जातो	7200
+jati	जाती	7100
+yeto	येतो	7000
+yeti	येती	6900
+ghar	घर	8500
+kaam	काम	8400
+paisa	पैसा	8200
+divas	दिवस	8000
+ratra	रात्र	7800
+aata	आता	8700
+nantar	नंतर	7600
+ani	आणि	9200
+pan	पण	8800
+mhanun	म्हणून	7500
+changla	चांगला	7200
+changali	चांगली	7100
+vait	वाईट	7000
+motha	मोठा	7300
+lahan	लहान	7200
+khup	खूप	8600
+thoda	थोडा	7400
+ek	एक	9100
+don	दोन	8500
+teen	तीन	8200
+gela	गेला	7800
+aala	आला	7700
