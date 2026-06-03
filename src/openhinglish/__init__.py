@@ -1,6 +1,6 @@
 from __future__ import annotations
 from openhinglish.types import Config, NormalizationResult, Token, Candidate, Category
-from openhinglish.disambiguator import FrequencyDisambiguator
+from openhinglish.disambiguator import FrequencyDisambiguator, ContextDisambiguator
 from openhinglish.pipeline.s0_preprocess import tokenize
 from openhinglish.pipeline.s1_classify import classify
 from openhinglish.pipeline.s2_spellnorm import spell_normalize
@@ -11,7 +11,7 @@ from openhinglish.pipeline.s6_assemble import assemble
 
 __all__ = ["normalize", "Config", "NormalizationResult", "Token", "Candidate", "Category"]
 
-_DISAMBIGUATOR = FrequencyDisambiguator()
+_DISAMBIGUATOR = ContextDisambiguator()
 
 
 def normalize(text: str, config: Config | None = None) -> NormalizationResult:
