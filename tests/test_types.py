@@ -1,4 +1,4 @@
-from openhinglish.types import Category, Candidate, Token, NormalizationResult, Config
+from openhinglish.types import Category, Token, NormalizationResult, Config
 
 
 def test_token_defaults():

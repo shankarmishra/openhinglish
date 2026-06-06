@@ -69,7 +69,7 @@ abbreviations — and get **two** clean outputs:
 
 Deterministic · explainable · CPU-only · no API key · MIT-licensed.
 [GitHub](https://github.com/shankarmishra/openhinglish) ·
-honest benchmark: **0.93 display EM / 0.88 TTS EM** on 43 sentences (alpha — coverage still growing).
+honest benchmark: **0.92 display EM / 0.92 TTS EM** on 59 sentences (alpha — coverage still growing).
 """
 
 with gr.Blocks(title="OpenHinglish Demo", theme=gr.themes.Soft()) as demo:

@@ -9,7 +9,10 @@ from openhinglish.pipeline.s4_names_brands import resolve_entities
 from openhinglish.pipeline.s5_numerals import expand_numerals
 from openhinglish.pipeline.s6_assemble import assemble
 
-__all__ = ["normalize", "Config", "NormalizationResult", "Token", "Candidate", "Category"]
+__all__ = [
+    "normalize", "Config", "NormalizationResult", "Token", "Candidate", "Category",
+    "FrequencyDisambiguator", "ContextDisambiguator",
+]
 
 _DISAMBIGUATOR = ContextDisambiguator()
 

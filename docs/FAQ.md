@@ -30,7 +30,7 @@ Because what a human reads and what an acoustic model should receive are genuine
 
 ## Is OpenHinglish production-ready?
 
-Not yet. It is **early-functional (alpha)**: 51 unit tests pass, the lexicons hold ~1,400+ entries, and the honest 43-sentence benchmark scores **0.93 display exact-match / 0.88 on the stricter TTS channel**. That benchmark is single-author and not multi-annotator validated, so treat it as an early signal, not a production guarantee. Multi-word addresses and code-switch boundaries are the known weak spots. It works well for vocabulary it knows and marks everything else as `UNKNOWN` so nothing fails silently.
+Not yet. It is **early-functional (alpha)**: 51 unit tests pass, the lexicons hold ~1,500+ entries, and the honest 59-sentence benchmark scores **0.92 display exact-match / 0.92 on the stricter TTS channel**. That benchmark is single-author and not multi-annotator validated, so treat it as an early signal, not a production guarantee. Long-tail vocabulary (uncommon words) and one code-switch ambiguity are the known weak spots. It works well for vocabulary it knows and marks everything else as `UNKNOWN` so nothing fails silently.
 
 ## Does it use an LLM or any AI model?
 

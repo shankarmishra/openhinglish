@@ -24,8 +24,20 @@ def resolve_entities(tokens: list[Token], config: Config) -> list[Token]:
             continue
 
         sentence_initial = idx == 0
-        supports_entity = _is_titlecase(tok.surface) or sentence_initial or cat == Category.BRAND \
+        # A lowercase, non-sentence-initial token that already resolved to a
+        # known common Hindi word should keep that reading — do not let a name
+        # or brand override it (e.g. "zara" = ज़रा "a little", not the brand
+        # "Zara"; "diya" = दिया, not the name "Diya"). The entity stays as an
+        # alternative so the signal is not lost.
+        hindi_word_wins = (
+            tok.category == Category.HINDI_ROMAN
+            and not _is_titlecase(tok.surface)
+            and not sentence_initial
+        )
+        supports_entity = (not hindi_word_wins) and (
+            _is_titlecase(tok.surface) or sentence_initial or cat == Category.BRAND
             or tok.category in (Category.NAME, Category.BRAND, Category.UNKNOWN)
+        )
 
         entity_candidate = Candidate(cat, ent.display, ent.pron_deva, 0.92)
         if supports_entity:

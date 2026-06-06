@@ -1,6 +1,6 @@
 # OpenHinglish — Architecture
 
-> Status: early-functional (deterministic pipeline complete; ~1,400+ lexicon entries; 51 tests pass).
+> Status: early-functional (deterministic pipeline complete; ~1,500+ lexicon entries; 51 tests pass).
 > This document is authoritative for the current implementation and covers the planned shape of V1–V4.
 > Read alongside [BENCHMARK.md](BENCHMARK.md) (evaluation methodology) and [DATASETS.md](DATASETS.md) (data provenance).
 
@@ -416,7 +416,7 @@ per-category exact-match and CER via `eval/metrics.py`. Growing the bench is add
 TSV. The benchmark is designed to be a community-maintained public artefact (IndianTTSBench full
 standard, V5 roadmap goal).
 
-**Warning:** the current 0.93 display EM (0.88 TTS) on 43 single-author sentences is an early signal,
+**Warning:** the current 0.92 display EM / 0.92 TTS EM on 59 single-author sentences is an early signal,
 not a production capability claim. Real accuracy on arbitrary, multi-annotator Hinglish is expected to
 be lower until V1 lexicons are scaled.
 
@@ -562,8 +562,8 @@ If S2 fires incorrectly (false typo detection), a Hindi word could be pushed thr
 TTS path. The `cutoff=0.85` guard is conservative but not infallible.
 
 **R5 — The bench score is a limited signal at current scale.**
-0.93 display EM (0.88 TTS) on 43 single-author sentences proves the pipeline works and surfaces
-real weak spots (address, code-switch); it does not prove correctness on arbitrary real text. Until
+0.92 display EM / 0.92 TTS EM on 59 single-author sentences proves the pipeline works and surfaces
+real weak spots (roman-Hindi long-tail vocabulary, code-switch); it does not prove correctness on arbitrary real text. Until
 the bench grows to 300+ human-verified, multi-annotator sentences covering out-of-vocabulary tokens
 and ambiguity traps, the metric must always be cited with that caveat.
 

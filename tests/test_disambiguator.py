@@ -7,10 +7,9 @@ Tests prove that:
   4. FrequencyDisambiguator is a pure no-op (regression guard).
 """
 from __future__ import annotations
-import pytest
 from openhinglish import normalize
 from openhinglish.types import Category
-from openhinglish.disambiguator import FrequencyDisambiguator, ContextDisambiguator
+from openhinglish.disambiguator import FrequencyDisambiguator
 
 
 # ---------------------------------------------------------------------------

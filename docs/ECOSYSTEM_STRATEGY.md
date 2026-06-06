@@ -244,7 +244,7 @@ This is a realistic plan for a solo maintainer with a full-time job. Not everyth
 - Do not spam Indian AI Discord servers with unsolicited announcements before V1.
 - Do not claim production-readiness before the lexicons are at V1 scale (10k+ entries).
 - Do not create a Twitter/X presence that cannot be maintained consistently. One good GitHub README is worth more than 50 inconsistent tweets.
-- Do not pursue conference submissions with the current 43-sentence single-author benchmark. It will not pass peer review until it reaches V1 scale (300+ multi-annotator sentences).
+- Do not pursue conference submissions with the current 59-sentence single-author benchmark. It will not pass peer review until it reaches V1 scale (300+ multi-annotator sentences).
 
 ---
 
@@ -315,7 +315,7 @@ Announcing before the library has real coverage will burn the first-impression o
 
 ### 8.4 The benchmark score needs an honest disclaimer
 
-The current IndianTTSBench-mini scores **0.93 display exact-match (0.88 TTS) on 43 single-author sentences** across 11 categories. This is a real, reproducible signal — and it honestly surfaces weak spots (address 0.50 display / 0.00 TTS; code-switch 0.71). But it must never be cited as a production accuracy guarantee. Until the benchmark reaches V1 scale (300+ diverse, multi-annotator sentences), always pair the number with the context that it is single-author and lexicon-leaning; quoting a bare score as evidence of quality will damage credibility with anyone who reads the methodology.
+The current IndianTTSBench-mini scores **0.92 display exact-match (0.92 TTS) on 59 single-author sentences** across 11 categories. This is a real, reproducible signal — and it honestly surfaces weak spots (roman-hindi 0.667 on long-tail vocabulary; code-switch 0.917 on one ambiguity). But it must never be cited as a production accuracy guarantee. Until the benchmark reaches V1 scale (300+ diverse, multi-annotator sentences), always pair the number with the context that it is single-author and lexicon-leaning; quoting a bare score as evidence of quality will damage credibility with anyone who reads the methodology.
 
 ### 8.5 CC-BY-SA from Dakshina could limit commercial embedding
 

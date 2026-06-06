@@ -2,7 +2,7 @@
 
 > Authoritative specification for the IndianTTSBench-mini evaluation harness and its path to becoming a community standard.
 > Read alongside `DATASETS.md` (data provenance).
-> Senior, honest tone: the current 43-sentence score is an early signal, not a production capability claim.
+> Senior, honest tone: the current 59-sentence score is an early signal, not a production capability claim.
 
 ---
 
@@ -24,19 +24,19 @@ Secondary purpose: regression gating. Every PR that touches lexicons, pipeline s
 
 | Category | What it tests | Rows | display EM | tts EM |
 |---|---|---|---|---|
-| **roman-hindi** | Core Roman → Devanagari transliteration of common Hindi words | 5 | 1.000 | 1.000 |
+| **roman-hindi** | Core Roman → Devanagari transliteration of common Hindi words | 12 | 0.667 | 0.667 |
 | **verb** | Verb conjugations and tense forms | 2 | 1.000 | 1.000 |
 | **name** | Transliteration and TTS pronunciation of Indian personal names | 4 | 1.000 | 1.000 |
 | **brand** | Brand-name recognition, casing in display, phonetic spell-out in TTS | 6 | 1.000 | 1.000 |
 | **numeral** | Digit handling and Hindi/English number-word expansion per config | 4 | 1.000 | 1.000 |
 | **acronym** | Letter-by-letter acronyms (e.g. `IIT`, `RBI`) | 4 | 1.000 | 1.000 |
-| **abbrev** | SMS/chat abbreviation expansion (`intv` → interview) | 3 | 1.000 | 0.667 |
-| **question** | Interrogative phrasings | 3 | 1.000 | 1.000 |
-| **mixed** | Sentences combining several of the above | 3 | 1.000 | 1.000 |
-| **code-switch** | Mid-sentence Hindi↔English transitions | 7 | 0.714 | 0.714 |
-| **address** | Street addresses, sector/pin/locality tokens | 2 | 0.500 | 0.000 |
+| **abbrev** | SMS/chat abbreviation expansion (`intv` → interview) | 3 | 1.000 | 1.000 |
+| **question** | Interrogative phrasings | 6 | 1.000 | 1.000 |
+| **mixed** | Sentences combining several of the above | 4 | 1.000 | 1.000 |
+| **code-switch** | Mid-sentence Hindi↔English transitions | 12 | 0.917 | 0.917 |
+| **address** | Street addresses, sector/pin/locality tokens | 2 | 1.000 | 1.000 |
 
-Scores above are from the current engine on the 43-sentence set (see §4.4). The two honest weak spots are **address** (multi-word locality tokens; tts especially) and **code-switch** (English-word boundaries inside Hindi sentences). `abbrev` is perfect on display but loses one row on the stricter full-Devanagari TTS channel.
+Scores above are from the current engine on the 59-sentence set (see §4.4). The two honest weak spots are now **roman-hindi** (0.667 — the long tail of uncommon vocabulary the lexicon does not yet cover, e.g. `kheti`, `bhatija`, `nukkad`) and **code-switch** (0.917 — one ambiguity case, `main` correctly = मैं "I" but the engine reads it as English "main"). Earlier weak spots — address, and the abbreviation TTS channel — were fixed in the latest engine round.
 
 **Planned (not yet a separate slug).** A future taxonomy expansion will add an explicit **ambiguity-traps** category for tokens that require context to resolve (`main` = I / main road, `kal` = yesterday / tomorrow, `to` = then / to / too). These currently fall inside `code-switch`/`mixed` rows. Ambiguity-traps deserve extra weight because they expose the core limitation of a deterministic engine: without context, such tokens cannot always be resolved correctly. The V3 neighbour-context disambiguator addresses some of these (e.g. "main road" vs "main ghar"); the rest are deferred. The benchmark must honestly represent this limitation rather than hide it by avoiding ambiguous test cases.
 
@@ -44,13 +44,13 @@ Scores above are from the current engine on the 43-sentence set (see §4.4). The
 
 | Release | Target rows | Status |
 |---|---|---|
-| V0.1 → current | 43 sentences across 11 categories | Done — single-maintainer authored; an early signal, not multi-annotator validated |
+| V0.1 → current | 59 sentences across 11 categories | Done — single-maintainer authored; an early signal, not multi-annotator validated |
 | V1 | ≥ 300 human-verified sentences | Requires data sprint; multi-annotator |
 | V2 | 300+ per language (Hindi + 6 new) | Per-language frontier |
 | V3 | 500+ including ambiguity-trap pairs | Ambiguity-trap set grows with V3 learned disambiguator |
 | V5 | 1 000+ | Full public benchmark; community-submitted; governed leaderboard |
 
-The current 43 sentences were authored by the maintainer who also wrote the engine. They are large enough to surface real weak spots (address and code-switch both score below 1.0), but they are **not** multi-annotator validated and do not yet represent the diversity of real-world Hinglish. Treat 0.93 display EM as an early signal, not a production capability claim.
+The current 59 sentences were authored by the maintainer who also wrote the engine. They are large enough to surface real weak spots (roman-hindi and code-switch both score below 1.0), but they are **not** multi-annotator validated and do not yet represent the diversity of real-world Hinglish. Treat 0.92 display EM as an early signal, not a production capability claim.
 
 ### 1.4 TSV Schema
 
@@ -127,7 +127,7 @@ Each metric is defined precisely below. All metrics are computed per-sentence an
 token_classification_accuracy = correct_category_tokens / total_tokens
 ```
 
-**Scope:** Requires a per-token annotated gold set (category labels per token, not just sentence-level). The current 43-sentence bench carries one category label per sentence, not per token. Add per-token annotation in V1.
+**Scope:** Requires a per-token annotated gold set (category labels per token, not just sentence-level). The current 59-sentence bench carries one category label per sentence, not per token. Add per-token annotation in V1.
 
 **Caveat:** Category assignment is a prerequisite for all downstream stages; errors here cascade. Report separately for each Category enum value to expose which categories are weak.
 
@@ -232,7 +232,7 @@ Per-category breakdown:
   code-switch    : ...
   address        : ...
 
-Notes: {any known limitations, e.g., "address tts EM is 0.000 in V1 by design — multi-word locality handling is unimplemented"}
+Notes: {any known limitations, e.g., "roman-hindi EM is 0.667 — five rows fail on long-tail vocabulary not yet in the lexicon"}
 ```
 
 ### 4.3 Regression Gating in CI
@@ -241,44 +241,44 @@ Every PR triggers CI which runs `run_bench` and compares the result against the 
 
 Gating rule: any metric drop > 1% on any category blocks the PR. The PR author must either fix the regression or file an explicit override with a documented justification in the PR description. Overrides are tracked in git history and reviewed at the next minor release.
 
-This gate applies at the current 43-row scale. A score drop on 43 rows means a real regression in the code or data; it cannot be dismissed as statistical noise at that scale.
+This gate applies at the current 59-row scale. A score drop on 59 rows means a real regression in the code or data; it cannot be dismissed as statistical noise at that scale.
 
-### 4.4 Honesty About the Current 43-Sentence Score
+### 4.4 Honesty About the Current 59-Sentence Score
 
-**Current headline result (engine vs. `eval/bench_mini/sentences.tsv`, 43 sentences, 11 categories):**
+**Current headline result (engine vs. `eval/bench_mini/sentences.tsv`, 59 sentences, 11 categories):**
 
 ```
-exact_match@display : 0.930  (n=43)
-exact_match@tts     : 0.884  (n=43)
+exact_match@display : 0.915  (n=59)
+exact_match@tts     : 0.915  (n=59)
 ```
 
 Per-category exact-match (display / tts):
 
 | Category | Rows | display EM | tts EM |
 |---|---|---|---|
-| roman-hindi | 5 | 1.000 | 1.000 |
+| roman-hindi | 12 | 0.667 | 0.667 |
 | verb | 2 | 1.000 | 1.000 |
 | name | 4 | 1.000 | 1.000 |
 | brand | 6 | 1.000 | 1.000 |
 | numeral | 4 | 1.000 | 1.000 |
 | acronym | 4 | 1.000 | 1.000 |
-| abbrev | 3 | 1.000 | 0.667 |
-| question | 3 | 1.000 | 1.000 |
-| mixed | 3 | 1.000 | 1.000 |
-| code-switch | 7 | 0.714 | 0.714 |
-| address | 2 | 0.500 | 0.000 |
+| abbrev | 3 | 1.000 | 1.000 |
+| question | 6 | 1.000 | 1.000 |
+| mixed | 4 | 1.000 | 1.000 |
+| code-switch | 12 | 0.917 | 0.917 |
+| address | 2 | 1.000 | 1.000 |
 
 Reproduce with: `python -m openhinglish.eval.run_bench`.
 
-**What this score does and does not mean.** 0.93 display EM is a real, reproducible number — meaningfully better than the smoke-test scores of earlier seed sets, and it surfaces honest weak spots instead of hiding them: **address** is the worst category (0.500 display, 0.000 tts — multi-word locality tokens are essentially unimplemented), and **code-switch** sits at 0.714 because English-word boundaries inside Hindi sentences are still imperfect. `abbrev` is perfect on display but drops one row on the stricter full-Devanagari TTS channel.
+**What this score does and does not mean.** 0.92 exact-match is a real, reproducible number, and the benchmark surfaces honest weak spots instead of hiding them: **roman-hindi** is now the worst category (0.667 — five rows fail on long-tail vocabulary the lexicon does not yet cover, e.g. `kheti` "farming", `bhatija` "nephew", `nukkad` "street corner"), and **code-switch** sits at 0.917 because of one genuine ambiguity (`main` should be मैं "I" but the engine reads it as English "main"). Earlier weak spots — address and the abbreviation TTS channel — were fixed in the latest engine round. display and TTS EM are identical here because every remaining failure is a whole missing/ambiguous word that affects both channels.
 
-But these 43 rows were authored by the maintainer who also wrote the engine, and they lean toward vocabulary the lexicons already cover. They do **not** adequately cover:
+But these 59 rows were authored by the maintainer who also wrote the engine, and they lean toward vocabulary the lexicons already cover. They do **not** adequately cover:
 - Out-of-vocabulary Roman-Hindi words (the long tail of real Hinglish).
 - Ambiguous tokens requiring context (no dedicated `ambiguity-traps` slice yet — see §1.2).
 - Regional spelling variants.
 - Any language other than Hindi + English.
 
-The honest framing for any production evaluation: "0.93 display EM on a 43-sentence, single-author benchmark is an encouraging early signal; address and code-switch are known weak spots; accuracy on unseen, multi-annotator Hinglish is expected to be lower and is the V1 measurement goal." Do not quote 0.93 as a production accuracy guarantee.
+The honest framing for any production evaluation: "0.92 display EM on a 59-sentence, single-author benchmark is an encouraging early signal; the roman-Hindi long tail and code-switch are known weak spots; accuracy on unseen, multi-annotator Hinglish is expected to be lower and is the V1 measurement goal." Do not quote 0.92 as a production accuracy guarantee.
 
 ---
 
@@ -330,7 +330,7 @@ An open public benchmark is gameable. Specific risks:
 
 ## 6. Challenged Assumptions / Risks / Open Questions
 
-1. **"A benchmark of 43 rows growing to 300 is straightforward."** Multi-annotator adjudication of 300 Hinglish sentences to the standard required (per-token labels, dual annotation, IAA reporting) is 50–100 person-hours minimum. With a bus-factor-1 project, this is a multi-month commitment. The V1 timeline must reflect this honestly.
+1. **"A benchmark of 59 rows growing to 300 is straightforward."** Multi-annotator adjudication of 300 Hinglish sentences to the standard required (per-token labels, dual annotation, IAA reporting) is 50–100 person-hours minimum. With a bus-factor-1 project, this is a multi-month commitment. The V1 timeline must reflect this honestly.
 
 2. **"The category taxonomy is complete."** The 11 current categories are a reasonable starting point but almost certainly incomplete, and lack a dedicated `ambiguity-traps` slice (see §1.2). Missing candidates: honorifics (`ji`, `sahab`), onomatopoeia, transliterated English idioms (`game changer` → correct Devanagari?), regional greetings (`namaskar` vs. `sat sri akal`). The category set should be treated as open and versioned.
 

@@ -31,7 +31,6 @@ CPU performance warning:
 
 from __future__ import annotations
 
-import os
 import warnings
 from pathlib import Path
 from typing import Union
@@ -124,7 +123,6 @@ def _load_model(model_id: str) -> tuple:
 def _write_wav(audio_tensor, sample_rate: int, out_path: str) -> None:
     """Write a 1-D float tensor to a WAV file using soundfile."""
     import soundfile as sf  # noqa: PLC0415
-    import torch            # noqa: PLC0415
 
     audio_np = audio_tensor.squeeze().cpu().float().numpy()
     sf.write(out_path, audio_np, sample_rate)

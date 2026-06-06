@@ -11,7 +11,7 @@
 
 `from openhinglish import normalize` → clean Devanagari for any TTS engine. **No GPU. No API key. No network calls. MIT-licensed code.**
 
-- **0.93 display exact-match** on a 43-sentence honest benchmark (0.88 on the stricter full-Devanagari TTS channel) — reproducible with one command: `python -m openhinglish.eval.run_bench`.
+- **0.92 display exact-match** on a 59-sentence honest benchmark (0.92 on the TTS channel) — reproducible with one command: `python -m openhinglish.eval.run_bench`.
 - **Two outputs from one call** — a human-readable `display` (keeps `interview`, `Paytm` in Roman) *and* a fully-phonetic `tts` Devanagari string. Most transliterators give you only one.
 - **One import to feed IndicF5** — `normalize(text).tts` is exactly the clean Devanagari that AI4Bharat IndicF5, Indic-Parler-TTS, and CosyVoice2 expect.
 - **Readable, fixable, deterministic** — unlike a neural transliterator (e.g. IndicXlit), every token carries a `trace[]` showing which pipeline stage changed it plus n-best alternatives with confidence, so you can read *why* — and fix a wrong word with a one-line TSV edit, no retraining.
@@ -19,7 +19,7 @@
 ---
 
 > **Early-functional — not production-ready.**
-> The 7-stage deterministic pipeline is working and **51 unit tests pass**. Lexicons have grown from ~35 seed entries to **~1,400+ entries** (roman_hindi ~470+, plus verb conjugations, function words, English, names including cities, and brands). A **deterministic context disambiguator (V3)** is implemented, resolving structurally ambiguous tokens such as "main road" vs "main ghar" by neighbour context. A **REST API server, web test console, and CLI** are available. A **multilingual scaffold** (Marathi + Punjabi seed lexicons) exists but is not yet wired into the engine. The honest benchmark is **43 gold sentences at 0.93 display exact-match** (0.88 on the stricter full-Devanagari TTS channel) — real gaps remain in multi-word addresses, some code-switch boundaries, and multi-word abbreviations. **Not production-ready.** The highest-value contribution right now is adding lexicon entries — no coding required.
+> The 7-stage deterministic pipeline is working and **51 unit tests pass**. Lexicons have grown from ~35 seed entries to **~1,500+ entries** (roman_hindi ~500, plus verb conjugations, function words, English, names including cities, and brands). A **deterministic context disambiguator (V3)** is implemented, resolving structurally ambiguous tokens such as "main road" vs "main ghar" by neighbour context. A **REST API server, web test console, and CLI** are available. A **multilingual scaffold** (Marathi + Punjabi seed lexicons) exists but is not yet wired into the engine. The honest benchmark is **59 gold sentences at 0.92 exact-match** (display and TTS) — real gaps remain in long-tail vocabulary (uncommon words) and one code-switch ambiguity. **Not production-ready.** The highest-value contribution right now is adding lexicon entries — no coding required.
 
 ---
 
@@ -234,11 +234,11 @@ Full details: [docs/MASTER_ROADMAP.md](docs/MASTER_ROADMAP.md)
 | Version | Theme | Status |
 |---|---|---|
 | **V0.1 "Foundation"** | Deterministic pipeline, seed lexicons, n-best + traces | **Done** |
-| **V1 "Usable Hindi+English"** | ~1,400+ entries now, target 10k+ (Dakshina); 43-sentence benchmark at 0.93 display EM | **In progress** |
+| **V1 "Usable Hindi+English"** | ~1,500+ entries now, target 10k+ (Dakshina); 59-sentence benchmark at 0.92 display EM | **In progress** |
 | **V2 "Multilingual"** | Marathi + Punjabi seed lexicons exist; not wired into engine yet | **Scaffold only** |
 | **V3 "Context-aware"** | Deterministic neighbour-context disambiguator done; learned ML layer not started | **Started** |
 | **V4 "Ecosystem"** | REST API + web UI + CLI + experimental IndicF5 adapter done; hosted API + JS port not started | **Partial** |
-| **V5 "The Standard"** | 43-sentence honest benchmark done; public leaderboard + community governance not started | **Started** |
+| **V5 "The Standard"** | 59-sentence honest benchmark done; public leaderboard + community governance not started | **Started** |
 
 ---
 

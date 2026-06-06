@@ -66,4 +66,11 @@ def transliterate(tokens: list[Token], config: Config) -> list[Token]:
             if low in english_tts:
                 tok.tts_form = english_tts[low]
                 tok.trace.append(f"S3: english tts {low} -> {english_tts[low]}")
+            elif " " in low:
+                # Multi-word token (e.g. an expanded abbreviation like
+                # "btw" -> "by the way"): transliterate word-by-word for TTS,
+                # keeping any word we have no mapping for as-is.
+                parts = [english_tts.get(w, w) for w in low.split()]
+                tok.tts_form = " ".join(parts)
+                tok.trace.append(f"S3: english tts (multi-word) {low} -> {tok.tts_form}")
     return tokens

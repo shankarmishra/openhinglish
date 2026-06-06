@@ -25,7 +25,7 @@ Each version of OpenHinglish demands a specific data investment. The table below
 | **HiACC Hinglish code-switch corpus (2025)** | candidate | candidate | core | reuse | reuse | Code-switch eval; license UNVERIFIED — confirm before any use |
 | **Learned disambiguator training data** | — | — | core | reuse | reuse | Feeds the pluggable `Disambiguator` at Path C (V3); must be permissively licensed |
 
-**Current state (early-functional):** Lexicons have grown well past the original seeds — ~470+ Roman-Hindi words, ~70 SMS abbreviations, ~200 names, ~100 brands, ~260 English-TTS words (~1,400+ entries total). Real-world coverage on the long tail of uncommon tokens is still limited. The V1 data-scaling effort (target ~10k via Dakshina) remains the single highest-leverage task in the project.
+**Current state (early-functional):** Lexicons have grown well past the original seeds — ~470+ Roman-Hindi words, ~70 SMS abbreviations, ~200 names, ~100 brands, ~260 English-TTS words (~1,500+ entries total). Real-world coverage on the long tail of uncommon tokens is still limited. The V1 data-scaling effort (target ~10k via Dakshina) remains the single highest-leverage task in the project.
 
 ---
 
@@ -147,7 +147,7 @@ No single open dataset covers Indian SMS abbreviations comprehensively. Build st
 
 This is the most important data artifact in the project. It is also the hardest to build correctly.
 
-**Current state:** 43 single-author rows across 11 categories in `eval/bench_mini/sentences.tsv` (0.93 display EM / 0.88 TTS). Large enough to surface real weak spots (address, code-switch) but not yet multi-annotator validated; not a production capability claim.
+**Current state:** 59 single-author rows across 11 categories in `eval/bench_mini/sentences.tsv` (0.92 display EM / 0.92 TTS). Large enough to surface real weak spots (address, code-switch) but not yet multi-annotator validated; not a production capability claim.
 
 **V1 target: ≥ 300 human-verified sentences across all benchmark categories.**
 

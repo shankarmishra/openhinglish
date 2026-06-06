@@ -258,3 +258,6 @@ main	5000
 to	8000
 is	9000
 us	6000
+miss	8000
+sector	5000
+station	6000
